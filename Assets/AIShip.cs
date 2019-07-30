@@ -36,6 +36,6 @@ public class AIShip : MonoBehaviourPun
         }
 
         //try to orbit closest player
-
+        //we should add rays!
     }
 }
