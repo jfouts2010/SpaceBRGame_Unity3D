@@ -7,10 +7,9 @@ using Photon.Pun;
 public class Spaceship : MonoBehaviourPun
 {
     Rigidbody rb;
-    GameObject CameraGameObject;
+    public GameObject CameraGameObject;
     public GameObject bullet;
-    public GameObject Target;
-
+    public Vector3 rotationGoal;
     public float forwardThrustForce = 1.2f;
     public float backwardThrustForce = 1.2f;
     public float cameraMovementSpeed = 7f;
@@ -19,8 +18,9 @@ public class Spaceship : MonoBehaviourPun
     public float timeBetweenShots = 500;
     public float health = 100;
 
+    public bool thrustersOn = false;
     private bool first = true;
-    private GameObject lockOnTarget;
+    public GameObject lockOnTarget;
     private float lastShootTime = 0;
 
     void Start()
@@ -30,14 +30,19 @@ public class Spaceship : MonoBehaviourPun
     }
     private void FixedUpdate()
     {
+        //user force to rotate the ship towards the cameras vector
+        if (rotationGoal != null)
+            transform.forward = Vector3.Lerp(transform.forward, rotationGoal, Time.deltaTime * shipRotationSpeed);
+
         if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
             return;
 
         //CAMERA
         //put the camera behind the gameobject
         CameraGameObject.transform.position = Vector3.Lerp(CameraGameObject.transform.position, transform.position + (transform.up * 0.8f) + (-3 * CameraGameObject.transform.forward.normalized), Time.deltaTime * cameraMovementSpeed);
-        //user force to rotate the ship towards the cameras vector
-        transform.forward = Vector3.Lerp(transform.forward, CameraGameObject.transform.forward, Time.deltaTime * shipRotationSpeed);
+        rotationGoal = CameraGameObject.transform.forward;
+
+
     }
     // Update is called once per frame
     void Update()
@@ -48,29 +53,32 @@ public class Spaceship : MonoBehaviourPun
         //MOVEMENT
         if (Input.GetKey(KeyCode.W))
         {
-            rb.AddForceAtPosition(transform.forward * forwardThrustForce, transform.position);
+            ForwardThrust();
+            thrustersOn = true;
         }
-        if (Input.GetKey(KeyCode.S))
+        else if (Input.GetKey(KeyCode.S))
         {
-            rb.AddForceAtPosition(-1 * transform.forward * backwardThrustForce, transform.position);
+            ReverseThrust();
+            thrustersOn = false;
         }
+        else
+            thrustersOn = false;
         //limit velocity
-        if(rb.velocity.magnitude > maximumVelcoity)
+        if (rb.velocity.magnitude > maximumVelcoity)
             rb.velocity = Vector3.ClampMagnitude(rb.velocity, maximumVelcoity);
 
         //SHOOTING
         //locking on 
-        if(Input.GetKey(KeyCode.Mouse1))
+        if (Input.GetKey(KeyCode.Mouse1))
         {
             RaycastHit hit;
             Ray ray = new Ray(CameraGameObject.transform.position, CameraGameObject.transform.forward);
             int layerMask = ~(1 << 9);
             if (Physics.Raycast(ray, out hit, 10000, layerMask, QueryTriggerInteraction.Collide))
             {
-                if(hit.transform.gameObject.tag == "Ship")
+                if (hit.transform.gameObject.tag == "Ship")
                 {
                     lockOnTarget = hit.transform.gameObject;
-                    Instantiate(Target, lockOnTarget.transform);
                 }
             }
         }
@@ -82,11 +90,19 @@ public class Spaceship : MonoBehaviourPun
             RaycastHit hit;
             Ray ray = new Ray(CameraGameObject.transform.position, CameraGameObject.transform.forward);
             int layerMask = ~(1 << 9);
-            if (Physics.Raycast(ray, out hit, 1000, layerMask,QueryTriggerInteraction.Collide))
+            if (Physics.Raycast(ray, out hit, 1000, layerMask, QueryTriggerInteraction.Collide))
                 photonView.RPC("ShootGun", RpcTarget.All, hit.point - transform.position);
             else
                 photonView.RPC("ShootGun", RpcTarget.All, transform.forward);
         }
+    }
+    public void ForwardThrust()
+    {
+        rb.AddForceAtPosition(transform.forward * forwardThrustForce, transform.position);
+    }
+    public void ReverseThrust()
+    {
+        rb.AddForceAtPosition(-1 * transform.forward * backwardThrustForce, transform.position);
     }
     [PunRPC]
     void ShootGun(Vector3 direction, PhotonMessageInfo info)
