@@ -9,11 +9,13 @@ public class Spaceship : MonoBehaviourPun
     Rigidbody rb;
     public GameObject CameraGameObject;
     public GameObject bullet;
-    public Vector3 rotationGoal;
+    public Vector3 shipDirectionGoal;
+    public Vector3 shipTurnGoal;
     public float forwardThrustForce = 1.2f;
     public float backwardThrustForce = 1.2f;
+    public float rotationForce = 1.2f;
     public float cameraMovementSpeed = 7f;
-    public float shipRotationSpeed = 1f;
+    public float shipRotationSpeed = 3f;
     public float maximumVelcoity = 10;
     public float timeBetweenShots = 500;
     public float health = 100;
@@ -21,7 +23,7 @@ public class Spaceship : MonoBehaviourPun
     public bool thrustersOn = false;
     private bool first = true;
     public GameObject lockOnTarget;
-    private float lastShootTime = 0;
+    public float lastShootTime = 0;
 
     void Start()
     {
@@ -30,82 +32,36 @@ public class Spaceship : MonoBehaviourPun
     }
     private void FixedUpdate()
     {
-        //user force to rotate the ship towards the cameras vector
-        if (rotationGoal != null)
-            transform.forward = Vector3.Lerp(transform.forward, rotationGoal, Time.deltaTime * shipRotationSpeed);
-
-        if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
-            return;
-
-        //CAMERA
-        //put the camera behind the gameobject
-        CameraGameObject.transform.position = Vector3.Lerp(CameraGameObject.transform.position, transform.position + (transform.up * 0.8f) + (-3 * CameraGameObject.transform.forward.normalized), Time.deltaTime * cameraMovementSpeed);
-        rotationGoal = CameraGameObject.transform.forward;
-
-
+       
     }
     // Update is called once per frame
     void Update()
     {
-        if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
-            return;
-
-        //MOVEMENT
-        if (Input.GetKey(KeyCode.W))
-        {
-            ForwardThrust();
-            thrustersOn = true;
-        }
-        else if (Input.GetKey(KeyCode.S))
-        {
-            ReverseThrust();
-            thrustersOn = false;
-        }
-        else
-            thrustersOn = false;
         //limit velocity
         if (rb.velocity.magnitude > maximumVelcoity)
             rb.velocity = Vector3.ClampMagnitude(rb.velocity, maximumVelcoity);
-
-        //SHOOTING
-        //locking on 
-        if (Input.GetKey(KeyCode.Mouse1))
-        {
-            RaycastHit hit;
-            Ray ray = new Ray(CameraGameObject.transform.position, CameraGameObject.transform.forward);
-            int layerMask = ~(1 << 9);
-            if (Physics.Raycast(ray, out hit, 10000, layerMask, QueryTriggerInteraction.Collide))
-            {
-                if (hit.transform.gameObject.tag == "Ship")
-                {
-                    lockOnTarget = hit.transform.gameObject;
-                }
-            }
-        }
-        PhotonNetwork.FetchServerTimestamp();
-        if (Input.GetKey(KeyCode.Mouse0) && PhotonNetwork.ServerTimestamp > lastShootTime + timeBetweenShots)
-        {
-            lastShootTime = PhotonNetwork.ServerTimestamp;
-            PhotonView photonView = PhotonView.Get(this);
-            RaycastHit hit;
-            Ray ray = new Ray(CameraGameObject.transform.position, CameraGameObject.transform.forward);
-            int layerMask = ~(1 << 9);
-            if (Physics.Raycast(ray, out hit, 1000, layerMask, QueryTriggerInteraction.Collide))
-                photonView.RPC("ShootGun", RpcTarget.All, hit.point - transform.position);
-            else
-                photonView.RPC("ShootGun", RpcTarget.All, transform.forward);
-        }
+        //limit turn speed
+        if(rb.angularVelocity.magnitude > 1)
+            rb.angularVelocity = Vector3.ClampMagnitude(rb.angularVelocity, 1);
     }
-    public void ForwardThrust()
+    public void ForwardThrust(float percent)
     {
-        rb.AddForceAtPosition(transform.forward * forwardThrustForce, transform.position);
+        rb.AddForceAtPosition(transform.forward * forwardThrustForce * Mathf.Clamp(percent,0,1), transform.position);
     }
     public void ReverseThrust()
     {
         rb.AddForceAtPosition(-1 * transform.forward * backwardThrustForce, transform.position);
     }
+    public void TurnThrust(float percent, bool clockwise)
+    {
+        rb.AddTorque(Vector3.up * percent * (clockwise ? 1 : -1));
+    }
+    public void ShootGun(Vector3 target)
+    {
+        photonView.RPC("ShootGunRPC", RpcTarget.All, target);
+    }
     [PunRPC]
-    void ShootGun(Vector3 direction, PhotonMessageInfo info)
+    void ShootGunRPC(Vector3 direction, PhotonMessageInfo info)
     {
         GameObject newBullet = GameObject.Instantiate(bullet, transform.position, Quaternion.Euler(direction));
         newBullet.GetComponent<Bullet>().owner = this.gameObject;

@@ -40,6 +40,7 @@ namespace Photon.Pun.Demo.PunBasics
         [SerializeField]
         private GameObject playerPrefab;
 
+        public GameObject AIPrefab;
         #endregion
 
         #region MonoBehaviour CallBacks
@@ -51,8 +52,10 @@ namespace Photon.Pun.Demo.PunBasics
 		{
 			Instance = this;
 
-			// in case we started this demo with the wrong scene being active, simply load the menu scene
-			if (!PhotonNetwork.IsConnected)
+            //spawn AI SHIP
+            GameObject aiship = PhotonNetwork.Instantiate(this.AIPrefab.name, new Vector3(10f, 5f, 0f), Quaternion.identity, 0);
+            // in case we started this demo with the wrong scene being active, simply load the menu scene
+            if (!PhotonNetwork.IsConnected)
 			{
 				SceneManager.LoadScene("MainMenu");
 
@@ -71,7 +74,9 @@ namespace Photon.Pun.Demo.PunBasics
 
 					// we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
 					PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f,5f,0f), Quaternion.identity, 0);
-				}else{
+
+                }
+                else{
 
 					Debug.LogFormat("Ignoring scene load for {0}", SceneManagerHelper.ActiveSceneName);
 				}
