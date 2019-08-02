@@ -22,7 +22,7 @@ public class Turret : MonoBehaviourPun
         else
         {
             UpdateJohn();
-
+            int x = 5;
         }
     }
 
@@ -47,6 +47,7 @@ public class Turret : MonoBehaviourPun
         }
 
     }
+
     public void UpdateIan()
     {
         //Debug.Log("IM IAN");
