@@ -34,7 +34,7 @@ public class Turret : MonoBehaviourPun
         {
             if (tickcounter > 1000000)
                 tickcounter = 0;
-            return;
+            //return;
         }
 
         float shootVelocityMagnitude = 20;
@@ -85,7 +85,7 @@ public class Turret : MonoBehaviourPun
         {
             if (tickcounter > 1000000)
                 tickcounter = 0;
-            return;
+            //return;
         }
 
         float shootVelocityMagnitude = 20;
