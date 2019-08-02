@@ -22,7 +22,6 @@ public class Turret : MonoBehaviourPun
             return;
         if (this.photonView.Owner.NickName.ToLower().StartsWith("i"))
         {
-            Debug.Log("IM IAN");
             if (tickcounter++ % 5 == 0 || target == null)
             {
                 float mindist = float.MaxValue;

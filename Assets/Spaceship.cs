@@ -46,7 +46,6 @@ public class Spaceship : MonoBehaviourPun
 
         if (this.transform.localEulerAngles.x != 0 || this.transform.localEulerAngles.z != 0)
         {
-            Debug.Log(localEuler);
             this.transform.localEulerAngles = new Vector3(0, localEuler.y, 0);
         }
     }
