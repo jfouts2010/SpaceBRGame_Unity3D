@@ -13,8 +13,6 @@ public class Turret : MonoBehaviourPun
     public int tickcounter = 0;
     public void Update2()
     {
-        
-
         if (tickcounter++ % 5 == 0 || target == null)
         {
             float mindist = float.MaxValue;
@@ -36,7 +34,6 @@ public class Turret : MonoBehaviourPun
         {
             if (tickcounter > 1000000)
                 tickcounter = 0;
-            return;
         }
 
         float shootVelocityMagnitude = 20;
@@ -65,7 +62,6 @@ public class Turret : MonoBehaviourPun
 
     public void Update()
     {
-        
         if (tickcounter++ % 5 == 0  || target==null)
         {
             float mindist = float.MaxValue;
@@ -83,36 +79,45 @@ public class Turret : MonoBehaviourPun
                 }
             }
         }
-        if (tickcounter++ % 5 != 0)
+
+        if (tickcounter % 5 != 0)
         {
             if (tickcounter > 1000000)
                 tickcounter = 0;
-            return;
         }
+
         float shootVelocityMagnitude = 20;
         //shoot at target
         float distanceToTarget = Vector3.Distance(target.transform.position, transform.position);
         Vector3 targetVelocity = target.transform.GetComponent<Rigidbody>().velocity - transform.GetComponent<Rigidbody>().velocity;
         float timeToTarget = distanceToTarget / shootVelocityMagnitude;
 
+        //Vector3 targetPositionAfterTime = targetVelocity * timeToTarget + target.transform.position;
+        //float diffindistances = 100;
+        //while (diffindistances > .5)
+        //{
+        //    distanceToTarget = Vector3.Distance(targetPositionAfterTime, transform.position);
+        //    timeToTarget = distanceToTarget / shootVelocityMagnitude;
+        //    Vector3 newpos = targetVelocity * timeToTarget + target.transform.position;
+        //    diffindistances = Vector3.Distance(targetPositionAfterTime, newpos);
+        //    targetPositionAfterTime = newpos;
+        //}
         Vector3 targetPositionAfterTime = targetVelocity * timeToTarget + target.transform.position;
-        float diffindistances = 100;
-        while (diffindistances > .5)
+        for (int i = 0; i < 10; i++)
         {
             distanceToTarget = Vector3.Distance(targetPositionAfterTime, transform.position);
             timeToTarget = distanceToTarget / shootVelocityMagnitude;
-            Vector3 newpos = targetVelocity * timeToTarget + target.transform.position;
-            diffindistances = Vector3.Distance(targetPositionAfterTime, newpos);
-            targetPositionAfterTime = newpos;
+            targetPositionAfterTime = targetVelocity * timeToTarget + target.transform.position;
         }
+
         System.Random r = new System.Random();
         //pretend the target changes by 5% in travel time. Perhaps take distance into account. 
         float diffx = target.transform.position.x - targetPositionAfterTime.x;
         float diffy = target.transform.position.y - targetPositionAfterTime.y;
         float diffz = target.transform.position.z - targetPositionAfterTime.z;
-        targetPositionAfterTime.x += 1f - (r.Next(-5, 5) / 5f) * diffx;
-        targetPositionAfterTime.y += 1f - (r.Next(-5, 5) / 5f) * diffy;
-        targetPositionAfterTime.z += 1f - (r.Next(-5, 5) / 5f) * diffz;
+        targetPositionAfterTime.x = target.transform.position.x + (1f - (r.Next(-5, 5) / 20f)) * diffx;
+        targetPositionAfterTime.y = target.transform.position.y + (1f - (r.Next(-5, 5) / 20f)) * diffy;
+        targetPositionAfterTime.z = target.transform.position.z + (1f - (r.Next(-5, 5) / 20f)) * diffz;
 
         Vector3 shootVector = targetPositionAfterTime - transform.position;
         Vector3 shootVelocity = shootVector.normalized * shootVelocityMagnitude;
