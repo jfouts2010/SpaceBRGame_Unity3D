@@ -43,10 +43,11 @@ GameObject:
   - component: {fileID: 6782139297968264838}
   - component: {fileID: 5673731244295901357}
   - component: {fileID: 9132373657628019640}
+  - component: {fileID: 692059518012271440}
   - component: {fileID: 8453993112909286879}
   - component: {fileID: 8113625639680960791}
-  - component: {fileID: -574224194385709150}
   - component: {fileID: -3185854591889644046}
+  - component: {fileID: -574224194385709150}
   m_Layer: 0
   m_Name: PlayerPrefab
   m_TagString: Ship
@@ -133,6 +134,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   ObservedComponents:
   - {fileID: 9132373657628019640}
+  - {fileID: 692059518012271440}
   viewIdField: 0
   InstantiationId: 1
   isRuntimeInstantiated: 0
@@ -151,6 +153,22 @@ MonoBehaviour:
   m_SynchronizePosition: 1
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
+--- !u!114 &692059518012271440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6782139297968264840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!114 &8453993112909286879
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -179,6 +197,20 @@ MonoBehaviour:
   UIPrefab: {fileID: 9215463644949197419, guid: 4aef6ddd7f7ffdf4590ea2c2988f4381,
     type: 3}
   playerUiPrefab: {fileID: 0}
+--- !u!114 &-3185854591889644046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6782139297968264840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12a2de583c0349a428c6ae8178be5052, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bullet: {fileID: 8102552652978596914, guid: b18830cf91f3cde47a8a599b9aafbb7b, type: 3}
+  tickcounter: 0
 --- !u!114 &-574224194385709150
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -195,20 +227,6 @@ MonoBehaviour:
   ss: {fileID: 0}
   cameraPositionY: 1.5
   cameraPositionZ: -7.25
---- !u!114 &-3185854591889644046
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6782139297968264840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 12a2de583c0349a428c6ae8178be5052, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bullet: {fileID: 8102552652978596914, guid: b18830cf91f3cde47a8a599b9aafbb7b, type: 3}
-  tickcounter: 0
 --- !u!1 &6782139299505858480
 GameObject:
   m_ObjectHideFlags: 0
