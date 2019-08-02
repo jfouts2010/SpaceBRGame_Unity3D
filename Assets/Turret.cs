@@ -78,7 +78,7 @@ public class Turret : MonoBehaviourPun
             GameObject newBullet = Instantiate(bullet, transform.position, Quaternion.identity);
             newBullet.GetComponent<Bullet>().owner = this.gameObject;
             newBullet.transform.forward = shootVector;
-            newBullet.GetComponent<Rigidbody>().velocity = shootVelocity;
+            newBullet.GetComponent<Rigidbody>().velocity = shootVelocity + this.GetComponent<Rigidbody>().velocity;
             GameObject.Destroy(newBullet, 10);
         }
         else
@@ -119,7 +119,7 @@ public class Turret : MonoBehaviourPun
             GameObject newBullet = Instantiate(bullet, transform.position, Quaternion.identity);
             newBullet.transform.forward = shootVector;
             newBullet.GetComponent<Bullet>().owner = this.gameObject;
-            newBullet.GetComponent<Rigidbody>().velocity = shootVelocity;
+            newBullet.GetComponent<Rigidbody>().velocity = shootVelocity + this.GetComponent<Rigidbody>().velocity;
             GameObject.Destroy(newBullet, 10);
         }
     }

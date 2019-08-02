@@ -32,7 +32,23 @@ public class Spaceship : MonoBehaviourPun
     }
     private void FixedUpdate()
     {
-       
+        Vector3 localEuler = this.transform.localEulerAngles;
+        if (this.transform.localEulerAngles.x > 44)
+            this.transform.localEulerAngles = new Vector3(44, localEuler.y, localEuler.z);
+        if (this.transform.localEulerAngles.x < -44)
+            this.transform.localEulerAngles = new Vector3(-44, localEuler.y, localEuler.z);
+
+        if (this.transform.localEulerAngles.z > 44)
+            this.transform.localEulerAngles = new Vector3(localEuler.x, localEuler.y, 44);
+        if (this.transform.localEulerAngles.z < -44)
+            this.transform.localEulerAngles = new Vector3(localEuler.x, localEuler.y, -44);
+
+
+        if (this.transform.localEulerAngles.x != 0 || this.transform.localEulerAngles.z != 0)
+        {
+            Debug.Log(localEuler);
+            this.transform.localEulerAngles = new Vector3(0, localEuler.y, 0);
+        }
     }
     // Update is called once per frame
     void Update()
@@ -55,6 +71,10 @@ public class Spaceship : MonoBehaviourPun
     public void TurnThrust(float percent, bool clockwise)
     {
         rb.AddTorque(Vector3.up * percent * (clockwise ? 1 : -1));
+    }
+    public void ZDirectionThrust(float percent, bool up)
+    {
+        rb.AddForce(Vector3.up * (up ? 1 : -1));
     }
     public void ShootGun(Vector3 target)
     {

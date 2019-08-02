@@ -55,14 +55,13 @@ public class PlayerControlls : MonoBehaviourPun
             ss.TurnThrust(1, true);
         }
         //turn z axis
-        if (Input.GetKey(KeyCode.Q))
+        if (Input.GetKey(KeyCode.LeftShift))
         {
-            
+            ss.ZDirectionThrust(.5f, false);
         }
-        if (Input.GetKey(KeyCode.E))
+        if (Input.GetKey(KeyCode.Space))
         {
-            ss.CameraGameObject.transform.Rotate(new Vector3(0, 0, -1));
-            ss.shipTurnGoal = ss.CameraGameObject.transform.right;
+           ss.ZDirectionThrust(.5f, true);
         }
             //SHOOTING
             //locking on 
