@@ -69,7 +69,7 @@ public class Turret : MonoBehaviourPun
             GameObject[] gos = GameObject.FindGameObjectsWithTag("Ship");
             foreach (GameObject go in gos)
             {
-                if (go != null)
+                if (go != null && this.gameObject != go.gameObject)
                 {
                     float tempdist = Vector3.Distance(go.transform.position, transform.position);
                     if (tempdist < mindist)
