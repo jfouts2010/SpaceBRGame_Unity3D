@@ -61,3 +61,4 @@ crashlytics-build.properties
 *.pdb
 *.cache
 Debug
+Builds
