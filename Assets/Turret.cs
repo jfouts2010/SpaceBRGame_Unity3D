@@ -18,6 +18,8 @@ public class Turret : MonoBehaviourPun
     }
     public void Update()
     {
+        if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
+            return;
         if (this.photonView.Owner.NickName.ToLower().StartsWith("i"))
         {
             Debug.Log("IM IAN");
@@ -39,7 +41,7 @@ public class Turret : MonoBehaviourPun
                 }
             }
 
-            float shootVelocityMagnitude = 20;
+            float shootVelocityMagnitude = 1500;
             //shoot at target
             float distanceToTarget = Vector3.Distance(target.transform.position, transform.position);
             Vector3 targetVelocity = target.transform.GetComponent<Rigidbody>().velocity - transform.GetComponent<Rigidbody>().velocity;
@@ -80,7 +82,7 @@ public class Turret : MonoBehaviourPun
             newBullet.transform.forward = shootVector;
             newBullet.GetComponent<Rigidbody>().velocity = shootVelocity + this.GetComponent<Rigidbody>().velocity;
             GameObject.Destroy(newBullet, 10);*/
-            this.GetComponent<Spaceship>().ShootGun(shootVector + this.GetComponent<Rigidbody>().velocity);
+            this.GetComponent<Spaceship>().ShootGun(shootVector);
         }
         else
         {
@@ -101,7 +103,7 @@ public class Turret : MonoBehaviourPun
                     }
                 }
             }
-            float shootVelocityMagnitude = 20;
+            float shootVelocityMagnitude = 1500;
             //shoot at target
             float distanceToTarget = Vector3.Distance(target.transform.position, transform.position);
             Vector3 targetVelocity = target.transform.GetComponent<Rigidbody>().velocity - transform.GetComponent<Rigidbody>().velocity;
@@ -122,7 +124,7 @@ public class Turret : MonoBehaviourPun
              newBullet.GetComponent<Bullet>().owner = this.gameObject;
              newBullet.GetComponent<Rigidbody>().velocity = shootVelocity + this.GetComponent<Rigidbody>().velocity;
              GameObject.Destroy(newBullet, 10);*/
-            this.GetComponent<Spaceship>().ShootGun(shootVector + this.GetComponent<Rigidbody>().velocity);
+            this.GetComponent<Spaceship>().ShootGun(shootVector);
         }
     }
 }
