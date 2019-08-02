@@ -16,7 +16,6 @@ public class Turret : MonoBehaviourPun
         
 
     }
-
     public void Update()
     {
         if (this.photonView.Owner.NickName.ToLower().StartsWith("i"))
@@ -38,13 +37,6 @@ public class Turret : MonoBehaviourPun
                         }
                     }
                 }
-            }
-
-            if (tickcounter % 5 != 0)
-            {
-                if (tickcounter > 1000000)
-                    tickcounter = 0;
-                return;
             }
 
             float shootVelocityMagnitude = 20;
@@ -107,19 +99,11 @@ public class Turret : MonoBehaviourPun
                     }
                 }
             }
-            if (tickcounter % 5 != 0)
-            {
-                if (tickcounter > 1000000)
-                    tickcounter = 0;
-                return;
-            }
-
-        if (tickcounter % 5 != 0)
-        {
-            if (tickcounter > 1000000)
-                tickcounter = 0;
-            //return;
-        }
+            float shootVelocityMagnitude = 20;
+            //shoot at target
+            float distanceToTarget = Vector3.Distance(target.transform.position, transform.position);
+            Vector3 targetVelocity = target.transform.GetComponent<Rigidbody>().velocity - transform.GetComponent<Rigidbody>().velocity;
+            float timeToTarget = distanceToTarget / shootVelocityMagnitude;
 
             Vector3 targetPositionAfterTime = targetVelocity * timeToTarget + target.transform.position;
             for (int i = 0; i < 10; i++)
@@ -137,5 +121,4 @@ public class Turret : MonoBehaviourPun
             GameObject.Destroy(newBullet, 10);
         }
     }
-
 }
