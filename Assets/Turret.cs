@@ -84,6 +84,7 @@ public class Turret : MonoBehaviourPun
         {
             if (tickcounter > 1000000)
                 tickcounter = 0;
+            return;
         }
 
         float shootVelocityMagnitude = 20;
@@ -115,9 +116,9 @@ public class Turret : MonoBehaviourPun
         float diffx = target.transform.position.x - targetPositionAfterTime.x;
         float diffy = target.transform.position.y - targetPositionAfterTime.y;
         float diffz = target.transform.position.z - targetPositionAfterTime.z;
-        targetPositionAfterTime.x = target.transform.position.x + (1f - (r.Next(-5, 5) / 20f)) * diffx;
-        targetPositionAfterTime.y = target.transform.position.y + (1f - (r.Next(-5, 5) / 20f)) * diffy;
-        targetPositionAfterTime.z = target.transform.position.z + (1f - (r.Next(-5, 5) / 20f)) * diffz;
+        targetPositionAfterTime.x = target.transform.position.x - (1f - (r.Next(-5, 5) / 20f)) * diffx;
+        targetPositionAfterTime.y = target.transform.position.y - (1f - (r.Next(-5, 5) / 20f)) * diffy;
+        targetPositionAfterTime.z = target.transform.position.z - (1f - (r.Next(-5, 5) / 20f)) * diffz;
 
         Vector3 shootVector = targetPositionAfterTime - transform.position;
         Vector3 shootVelocity = shootVector.normalized * shootVelocityMagnitude;
