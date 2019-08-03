@@ -29,10 +29,10 @@ public class PlayerUI : MonoBehaviour
     {
         float minUISize = 100;
         speedTextGameObject.GetComponent<TextMeshProUGUI>().text = rb.velocity.magnitude.ToString("0.##");
-        healthTextGameObject.GetComponent<TextMeshProUGUI>().text = ss.health.ToString();
+        healthTextGameObject.GetComponent<TextMeshProUGUI>().text = ss.SystemHealth[SpaceshipSystem.Hull].ToString();
         if(ss.lockOnTarget != null)
         {
-            Vector3 vectorPosition = mainCamera.WorldToScreenPoint(ss.lockOnTarget.transform.position);
+            Vector3 vectorPosition = mainCamera.WorldToScreenPoint(ss.lockOnTarget.transform.Find("SpaceShipMesh").transform.position);
             float z = vectorPosition.z;
             Rect r = GUIRectWithObject(ss.lockOnTarget);
             //limit ui
@@ -90,14 +90,14 @@ public class PlayerUI : MonoBehaviour
             }
             
             targetting.transform.position = vectorPosition;
-            targetting.GetComponent<Image>().rectTransform.sizeDelta = new Vector3(r.width, r.height);
+            targetting.GetComponent<RawImage>().rectTransform.sizeDelta = new Vector3(r.width, r.height);
         }
     }
 
     public Rect GUIRectWithObject(GameObject go)
     {
-        Vector3 cen = go.GetComponent<Renderer>().bounds.center;
-        Vector3 ext = go.GetComponent<Renderer>().bounds.extents;
+        Vector3 cen = go.transform.Find("SpaceShipMesh").GetComponent<Renderer>().bounds.center;
+        Vector3 ext = go.transform.Find("SpaceShipMesh").GetComponent<Renderer>().bounds.extents;
         Vector2[] extentPoints = new Vector2[8]
          {
                WorldToGUIPoint(new Vector3(cen.x-ext.x, cen.y-ext.y, cen.z-ext.z)),

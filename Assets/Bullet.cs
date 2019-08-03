@@ -6,6 +6,7 @@ using Photon.Pun;
 public class Bullet : MonoBehaviour
 {
     public Photon.Realtime.Player owner;
+    public int bulletDamage = 10;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,10 +20,10 @@ public class Bullet : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "Ship")
+        if(other.transform.root.tag == "Ship")
         {
             //check to make sure this isnt you
-            PhotonView v = other.gameObject.GetComponent<PhotonView>();
+            PhotonView v = other.transform.root.gameObject.GetComponent<PhotonView>();
             if (v != null)
             {
                 if (v.Owner == owner)
@@ -31,10 +32,16 @@ public class Bullet : MonoBehaviour
             else
                 return; //if it doesnt have a photon view you can probably ignore it
             Destroy(this.gameObject);
-            Spaceship ss = other.GetComponent<Spaceship>();
+            Spaceship ss = other.transform.root.gameObject.GetComponent<Spaceship>();
             if(ss != null)
             {
-                ss.health -= 10;
+                ss.SystemHealth[SpaceshipSystem.Hull] -= bulletDamage;
+                if (ss.SystemHealth[SpaceshipSystem.Hull] <= 0)
+                    ss.SystemDestroyed(SpaceshipSystem.Hull);
+                SpaceshipSystem sys = other.GetComponent<SystemTag>().system;
+                ss.SystemHealth[sys] -= bulletDamage;
+                if (ss.SystemHealth[sys] <= 0)
+                    ss.SystemDestroyed(sys);
             }
         }
     }

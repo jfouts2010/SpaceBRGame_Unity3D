@@ -7,6 +7,7 @@ public class PlayerControlls : MonoBehaviourPun
 {
     public GameObject CameraGameObject;
     public Spaceship ss;
+    public List<GameObject> Turrets = new List<GameObject>();
     public float cameraPositionY = .8f;
     public float cameraPositionZ = -3f;
     // Start is called before the first frame update
@@ -14,18 +15,16 @@ public class PlayerControlls : MonoBehaviourPun
     {
         CameraGameObject = GameObject.Find("MainCamera").gameObject;
         ss = this.GetComponent<Spaceship>();
+
     }
     private void FixedUpdate()
     {
-       
-
         if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
             return;
 
         //CAMERA
         //put the camera behind the gameobject
         CameraGameObject.transform.position = Vector3.Lerp(CameraGameObject.transform.position, transform.position + (transform.up * cameraPositionY) + (cameraPositionZ * CameraGameObject.transform.forward.normalized), Time.deltaTime * ss.cameraMovementSpeed);
-        ss.shipDirectionGoal = CameraGameObject.transform.forward;
     }
     // Update is called once per frame
     void Update()
@@ -46,7 +45,7 @@ public class PlayerControlls : MonoBehaviourPun
         }
         else
             ss.thrustersOn = false;
-        if(Input.GetKey(KeyCode.A))
+        if (Input.GetKey(KeyCode.A))
         {
             ss.TurnThrust(1, false);
         }
@@ -61,11 +60,11 @@ public class PlayerControlls : MonoBehaviourPun
         }
         if (Input.GetKey(KeyCode.Space))
         {
-           ss.ZDirectionThrust(.5f, true);
+            ss.ZDirectionThrust(.5f, true);
         }
-            //SHOOTING
-            //locking on 
-            if (Input.GetKey(KeyCode.Mouse1))
+        //SHOOTING
+        //locking on 
+        if (Input.GetKey(KeyCode.Mouse1))
         {
             RaycastHit hit;
             Ray ray = new Ray(CameraGameObject.transform.position, CameraGameObject.transform.forward);
@@ -83,13 +82,20 @@ public class PlayerControlls : MonoBehaviourPun
         {
             ss.lastShootTime = PhotonNetwork.ServerTimestamp;
             PhotonView photonView = PhotonView.Get(this);
-            RaycastHit hit;
+            //where to shoot
+            Vector3 cameraForwardVector = CameraGameObject.transform.forward;
+            float distanceToTarget = 50; // default if no target
+            if (ss.lockOnTarget != null)
+                distanceToTarget = Vector3.Distance(CameraGameObject.transform.position, ss.lockOnTarget.transform.position);
+            Vector3 shootTarget = cameraForwardVector.normalized * distanceToTarget + CameraGameObject.transform.position;
+            ss.ShootAllTurrets(shootTarget);
+           /* RaycastHit hit;
             Ray ray = new Ray(CameraGameObject.transform.position, CameraGameObject.transform.forward);
             int layerMask = ~(1 << 9);
             if (Physics.Raycast(ray, out hit, 1000, layerMask, QueryTriggerInteraction.Collide))
-                ss.ShootGun(hit.point - transform.position);
+                ss.ShootAllTurrets(hit.point - transform.position);
             else
-                ss.ShootGun(transform.forward);
+                ss.ShootAllTurrets(transform.forward);*/
         }
     }
 }
