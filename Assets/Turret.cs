@@ -54,10 +54,10 @@ public class Turret : MonoBehaviourPun
 
         UpdateTarget();
 
-        float shootVelocityMagnitude = 1500;
+        float shootVelocityMagnitude = 20;
         //shoot at target
         float distanceToTarget = Vector3.Distance(target.transform.position, transform.position);
-        Vector3 targetVelocity = target.transform.GetComponent<Rigidbody>().velocity - transform.GetComponent<Rigidbody>().velocity;
+        Vector3 targetVelocity = target.transform.GetComponent<Rigidbody>().velocity;// - transform.GetComponent<Rigidbody>().velocity;
         float timeToTarget = distanceToTarget / shootVelocityMagnitude;
         //timeToTarget = timeToTarget *1.15f;
         Vector3 targetPositionAfterTime = targetVelocity * timeToTarget + target.transform.position;
@@ -102,7 +102,7 @@ public class Turret : MonoBehaviourPun
     {
         UpdateTarget();
 
-        float shootVelocityMagnitude = 1500;
+        float shootVelocityMagnitude = 20;
         //shoot at target
         float distanceToTarget = Vector3.Distance(target.transform.position, transform.position);
         Vector3 targetVelocity = target.transform.GetComponent<Rigidbody>().velocity - transform.GetComponent<Rigidbody>().velocity;
