@@ -20,8 +20,7 @@ public class Bullet : MonoBehaviourPun
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (!PhotonNetwork.IsMasterClient)
-            return;
+        
         if(other.transform.root.tag == "Ship")
         {
             //check to make sure this isnt you
@@ -34,6 +33,8 @@ public class Bullet : MonoBehaviourPun
             else
                 return; //if it doesnt have a photon view you can probably ignore it
             Destroy(this.gameObject);
+            if (!PhotonNetwork.IsMasterClient)
+                return;
             Spaceship ss = other.transform.root.gameObject.GetComponent<Spaceship>();
             if(ss != null)
             {

@@ -99,6 +99,8 @@ MonoBehaviour:
   thrustersOn: 0
   lockOnTarget: {fileID: 0}
   lastShootTime: 0
+  healTick: 500
+  lastHealTick: 0
 --- !u!54 &271470043339383652
 Rigidbody:
   m_ObjectHideFlags: 0

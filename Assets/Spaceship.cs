@@ -28,7 +28,8 @@ public class Spaceship : MonoBehaviourPun
     private bool first = true;
     public GameObject lockOnTarget;
     public float lastShootTime = 0;
-
+    public float healTick = 500;
+    public float lastHealTick = 0;
     void Start()
     {
         rb = transform.GetComponent<Rigidbody>();
@@ -89,12 +90,20 @@ public class Spaceship : MonoBehaviourPun
             systemThrustMultiplier = 0;
         else
             systemThrustMultiplier = 1;
-        if (SystemHealth[SpaceshipSystem.Engine] < SystemHealthMax[SpaceshipSystem.Engine])
-            SystemHealth[SpaceshipSystem.Engine] += 5;
-        if (SystemHealth[SpaceshipSystem.Hull] < SystemHealthMax[SpaceshipSystem.Hull])
-            SystemHealth[SpaceshipSystem.Hull] += 5;
-        if (SystemHealth[SpaceshipSystem.Weapons] < SystemHealthMax[SpaceshipSystem.Weapons])
-            SystemHealth[SpaceshipSystem.Weapons] += 5;
+
+        if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
+            return;
+        PhotonNetwork.FetchServerTimestamp();
+        if (PhotonNetwork.ServerTimestamp > lastHealTick + healTick)
+        {
+            lastHealTick = PhotonNetwork.ServerTimestamp;
+            if (SystemHealth[SpaceshipSystem.Engine] < SystemHealthMax[SpaceshipSystem.Engine])
+                SystemHealth[SpaceshipSystem.Engine] += 5;
+            if (SystemHealth[SpaceshipSystem.Hull] < SystemHealthMax[SpaceshipSystem.Hull])
+                SystemHealth[SpaceshipSystem.Hull] += 5;
+            if (SystemHealth[SpaceshipSystem.Weapons] < SystemHealthMax[SpaceshipSystem.Weapons])
+                SystemHealth[SpaceshipSystem.Weapons] += 5;
+        }
     }
     public void ForwardThrust(float percent)
     {
