@@ -6,20 +6,21 @@ using Photon.Pun;
 public class Bullet : MonoBehaviour
 {
     public Photon.Realtime.Player owner;
+    public bool doheal = false;
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
     private void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "Ship")
+        if (other.tag == "Ship")
         {
             //check to make sure this isnt you
             PhotonView v = other.gameObject.GetComponent<PhotonView>();
@@ -32,9 +33,12 @@ public class Bullet : MonoBehaviour
                 return; //if it doesnt have a photon view you can probably ignore it
             Destroy(this.gameObject);
             Spaceship ss = other.GetComponent<Spaceship>();
-            if(ss != null)
+            if (ss != null)
             {
-                ss.health -= 10;
+                if (!doheal)
+                    ss.health -= 10;
+                else
+                    ss.health += 10;
             }
         }
     }

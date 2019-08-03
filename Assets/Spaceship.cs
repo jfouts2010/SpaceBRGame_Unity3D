@@ -75,16 +75,18 @@ public class Spaceship : MonoBehaviourPun
     {
         rb.AddForce(Vector3.up * (up ? 1 : -1));
     }
-    public void ShootGun(Vector3 target)
+    public void ShootGun(Vector3 target, bool doheal = false)
     {
-        photonView.RPC("ShootGunRPC", RpcTarget.All, target);
+        photonView.RPC("ShootGunRPC", RpcTarget.All, target, doheal );
     }
     [PunRPC]
-    void ShootGunRPC(Vector3 direction, PhotonMessageInfo info)
+    void ShootGunRPC(Vector3 direction, bool doheal,  PhotonMessageInfo info)
     {
         GameObject newBullet = GameObject.Instantiate(bullet, transform.position, Quaternion.Euler(direction));
         newBullet.GetComponent<Bullet>().owner = GetComponent<PhotonView>().Owner;
         newBullet.transform.forward = direction.normalized;
+        if (doheal)
+            newBullet.GetComponent<Bullet>().doheal = true;
         newBullet.GetComponent<Rigidbody>().velocity = (direction.normalized * 20);// + rb.velocity);
         GameObject.Destroy(newBullet, 10);
     }

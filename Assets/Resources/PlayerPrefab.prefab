@@ -49,6 +49,7 @@ GameObject:
   - component: {fileID: -3185854591889644046}
   - component: {fileID: -574224194385709150}
   - component: {fileID: 6252407685925555753}
+  - component: {fileID: 4443284714366652261}
   m_Layer: 0
   m_Name: PlayerPrefab
   m_TagString: Ship
@@ -212,6 +213,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bullet: {fileID: 8102552652978596914, guid: b18830cf91f3cde47a8a599b9aafbb7b, type: 3}
   tickcounter: 0
+  dohealOtherUpdate: 0
 --- !u!114 &-574224194385709150
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -241,6 +243,21 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 3.76, y: 1, z: 6.16}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4443284714366652261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6782139297968264840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12a2de583c0349a428c6ae8178be5052, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bullet: {fileID: 0}
+  tickcounter: 0
+  dohealOtherUpdate: 1
 --- !u!1 &6782139299505858480
 GameObject:
   m_ObjectHideFlags: 0
@@ -334,7 +351,7 @@ PrefabInstance:
     - target: {fileID: 6629838266631234603, guid: 2cb127868d0b24345bb99f36deb5981e,
         type: 3}
       propertyPath: m_TagString
-      value: Ship
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 6629838266631665675, guid: 2cb127868d0b24345bb99f36deb5981e,
         type: 3}

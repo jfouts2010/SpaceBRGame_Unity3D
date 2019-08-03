@@ -11,29 +11,31 @@ public class Turret : MonoBehaviourPun
     GameObject target;
     public GameObject bullet;
     public int tickcounter = 0;
+    public bool dohealOtherUpdate = false;
     public void Update()
     {
         if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
             return;
-        if(this.photonView.Owner == null)
+        if (tickcounter++ % 5 != 0)
+            return;
+        UpdateTarget();
+        if (this.photonView.Owner == null && !dohealOtherUpdate)
         {
             UpdateIan();
         }
-        else if (this.photonView.Owner.NickName.ToLower().StartsWith("i"))
+        else if (!dohealOtherUpdate && this.photonView.Owner.NickName.ToLower().StartsWith("i"))
         {
             UpdateIan();
         }
         else
         {
             UpdateJohn();
-            int x = 5;
         }
     }
 
     public void UpdateTarget()
     {
-        if (tickcounter++ % 5 == 0 || target == null)
-        {
+        
             float mindist = float.MaxValue;
             GameObject[] gos = GameObject.FindGameObjectsWithTag("Ship");
             foreach (GameObject go in gos)
@@ -48,15 +50,11 @@ public class Turret : MonoBehaviourPun
                     }
                 }
             }
-        }
-
     }
 
     public void UpdateIan()
     {
         //Debug.Log("IM IAN");
-
-        UpdateTarget();
 
         float shootVelocityMagnitude = 20;
         //shoot at target
@@ -104,8 +102,6 @@ public class Turret : MonoBehaviourPun
 
     public void UpdateJohn()
     {
-        UpdateTarget();
-
         float shootVelocityMagnitude = 20;
         //shoot at target
         Vector3 ourVelocity = transform.GetComponent<Rigidbody>().velocity;
@@ -128,6 +124,6 @@ public class Turret : MonoBehaviourPun
          newBullet.GetComponent<Bullet>().owner = this.gameObject;
          newBullet.GetComponent<Rigidbody>().velocity = shootVelocity + this.GetComponent<Rigidbody>().velocity;
          GameObject.Destroy(newBullet, 10);*/
-        this.GetComponent<Spaceship>().ShootGun(shootVector);
+        this.GetComponent<Spaceship>().ShootGun(shootVector,dohealOtherUpdate);
     }
 }
