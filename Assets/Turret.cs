@@ -15,7 +15,11 @@ public class Turret : MonoBehaviourPun
     {
         if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
             return;
-        if (this.photonView.Owner.NickName.ToLower().StartsWith("i"))
+        if(this.photonView.Owner == null)
+        {
+            UpdateIan();
+        }
+        else if (this.photonView.Owner.NickName.ToLower().StartsWith("i"))
         {
             UpdateIan();
         }

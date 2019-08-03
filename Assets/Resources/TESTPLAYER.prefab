@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2947041315141270011}
   - component: {fileID: 3614007912793189808}
   - component: {fileID: 1899337251014233162}
+  - component: {fileID: -3256577297698993532}
   m_Layer: 0
   m_Name: TESTPLAYER
   m_TagString: Ship
@@ -147,6 +148,20 @@ MonoBehaviour:
   m_SynchronizePosition: 1
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
+--- !u!114 &-3256577297698993532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 271470043339382932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12a2de583c0349a428c6ae8178be5052, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bullet: {fileID: 0}
+  tickcounter: 0
 --- !u!1 &271470043339382935
 GameObject:
   m_ObjectHideFlags: 0

@@ -83,7 +83,7 @@ public class Spaceship : MonoBehaviourPun
     void ShootGunRPC(Vector3 direction, PhotonMessageInfo info)
     {
         GameObject newBullet = GameObject.Instantiate(bullet, transform.position, Quaternion.Euler(direction));
-        newBullet.GetComponent<Bullet>().owner = this.gameObject;
+        newBullet.GetComponent<Bullet>().owner = GetComponent<PhotonView>().Owner;
         newBullet.transform.forward = direction.normalized;
         newBullet.GetComponent<Rigidbody>().velocity = (direction.normalized * 20 + rb.velocity);
         GameObject.Destroy(newBullet, 10);
