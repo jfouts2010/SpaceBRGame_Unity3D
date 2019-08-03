@@ -38,17 +38,8 @@ public class Bullet : MonoBehaviourPun
             Spaceship ss = other.transform.root.gameObject.GetComponent<Spaceship>();
             if(ss != null)
             {
-                ss.SystemHealth[SpaceshipSystem.Hull] -= bulletDamage;
-                if (ss.SystemHealth[SpaceshipSystem.Hull] <= 0)
-                    ss.SystemDestroyed(SpaceshipSystem.Hull);
-              
                 SpaceshipSystem sys = other.GetComponent<SystemTag>().system;
-                if (ss.SystemHealth[sys] > 0)
-                {
-                    ss.SystemHealth[sys] -= bulletDamage;
-                    if (ss.SystemHealth[sys] <= 0)
-                        ss.SystemDestroyed(sys);
-                }
+                ss.TakeSystemDamageRPC(sys, bulletDamage);
             }
         }
     }

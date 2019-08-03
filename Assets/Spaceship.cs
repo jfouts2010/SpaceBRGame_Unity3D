@@ -160,6 +160,25 @@ public class Spaceship : MonoBehaviourPun
             GameObject.Destroy(newBullet, 10);
         }
     }
+    public void TakeSystemDamageRPC(SpaceshipSystem sys, int bulletDamage)
+    {
+        photonView.RPC("TakeSystemDamage", RpcTarget.All, (int)sys, bulletDamage);
+    }
+    [PunRPC]
+    void TakeSystemDamage(int sys, int bulletDamage, PhotonMessageInfo info)
+    {
+        SystemHealth[SpaceshipSystem.Hull] -= bulletDamage;
+        if (SystemHealth[SpaceshipSystem.Hull] <= 0)
+            SystemDestroyed(SpaceshipSystem.Hull);
+
+       
+        if (SystemHealth[(SpaceshipSystem)sys] > 0)
+        {
+            SystemHealth[(SpaceshipSystem)sys] -= bulletDamage;
+            if (SystemHealth[(SpaceshipSystem)sys] <= 0)
+                SystemDestroyed((SpaceshipSystem)sys);
+        }
+    }
     public void ShootAllTurrets(Vector3 target)
     {
         photonView.RPC("ShootAllTurretsRPC", RpcTarget.All, target);
