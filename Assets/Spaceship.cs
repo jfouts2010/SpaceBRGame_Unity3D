@@ -123,7 +123,13 @@ public class Spaceship : MonoBehaviourPun
     }
     public void SystemDestroyed(SpaceshipSystem system)
     {
-        if (system == SpaceshipSystem.Hull)
+        photonView.RPC("SystemDestroyedRPC", RpcTarget.All, (int)system);
+    }
+
+    [PunRPC]
+    void SystemDestroyedRPC(int system, PhotonMessageInfo info)
+    {
+        if ((SpaceshipSystem)system == SpaceshipSystem.Hull)
         {
             GameObject explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
             Destroy(explosion, 3);
@@ -132,7 +138,7 @@ public class Spaceship : MonoBehaviourPun
         else
             foreach (GameObject go in Systems)
             {
-                if (go.GetComponent<SystemTag>().system == system)
+                if (go.GetComponent<SystemTag>().system == (SpaceshipSystem)system)
                 {
                     GameObject explosion = Instantiate(explosionPrefab, go.transform.position, Quaternion.identity);
                     Destroy(explosion, 3);
