@@ -113,7 +113,7 @@ public class Turret : MonoBehaviourPun
         for (int i = 0; i < 10; i++)
         {
             distanceToTarget = Vector3.Distance(targetPositionAfterTime, transform.position);
-            timeToTarget = distanceToTarget / shootVelocityMagnitude;
+            timeToTarget = distanceToTarget / (shootVelocityMagnitude + ourVelocity.magnitude);
             targetPositionAfterTime = targetVelocity * timeToTarget + target.transform.position;
         }
 
