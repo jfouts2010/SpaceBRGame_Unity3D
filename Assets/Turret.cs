@@ -59,7 +59,7 @@ public class Turret : MonoBehaviourPun
         float distanceToTarget = Vector3.Distance(target.transform.position, transform.position);
         Vector3 targetVelocity = target.transform.GetComponent<Rigidbody>().velocity - transform.GetComponent<Rigidbody>().velocity;
         float timeToTarget = distanceToTarget / shootVelocityMagnitude;
-
+        //timeToTarget = timeToTarget *1.15f;
         Vector3 targetPositionAfterTime = targetVelocity * timeToTarget + target.transform.position;
         float diffindistances = 100;
         while (diffindistances > .5)
