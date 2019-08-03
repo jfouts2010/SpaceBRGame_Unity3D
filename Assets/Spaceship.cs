@@ -85,7 +85,7 @@ public class Spaceship : MonoBehaviourPun
         GameObject newBullet = GameObject.Instantiate(bullet, transform.position, Quaternion.Euler(direction));
         newBullet.GetComponent<Bullet>().owner = this.gameObject;
         newBullet.transform.forward = direction.normalized;
-        newBullet.GetComponent<Rigidbody>().AddForce(direction.normalized * 1500 + rb.velocity);
+        newBullet.GetComponent<Rigidbody>().velocity = direction.normalized * 20 + rb.velocity;
         GameObject.Destroy(newBullet, 10);
     }
 
