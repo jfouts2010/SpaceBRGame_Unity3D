@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 3614007912793189808}
   - component: {fileID: 1899337251014233162}
   - component: {fileID: -3256577297698993532}
+  - component: {fileID: 7039078686706900368}
   m_Layer: 0
   m_Name: TESTPLAYER
   m_TagString: Ship
@@ -114,6 +115,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   ObservedComponents:
   - {fileID: 1899337251014233162}
+  - {fileID: 7039078686706900368}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -162,6 +164,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bullet: {fileID: 0}
   tickcounter: 0
+--- !u!114 &7039078686706900368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 271470043339382932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &271470043339382935
 GameObject:
   m_ObjectHideFlags: 0
