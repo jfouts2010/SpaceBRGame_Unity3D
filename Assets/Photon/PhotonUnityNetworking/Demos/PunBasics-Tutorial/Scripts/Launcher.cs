@@ -215,7 +215,7 @@ namespace Photon.Pun.Demo.PunBasics
 
 				// #Critical
 				// Load the Room Level. 
-				PhotonNetwork.LoadLevel("SampleScene");
+				PhotonNetwork.LoadLevel("First Level");
 
 			}
 		}

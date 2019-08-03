@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Bullet
   - Ship
+  - SpawnPoint
   layers:
   - Default
   - TransparentFX

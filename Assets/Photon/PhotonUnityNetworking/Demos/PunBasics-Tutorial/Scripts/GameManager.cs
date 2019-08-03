@@ -12,6 +12,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 using Photon.Realtime;
+using System.Collections.Generic;
 
 namespace Photon.Pun.Demo.PunBasics
 {
@@ -29,7 +30,7 @@ namespace Photon.Pun.Demo.PunBasics
 		#region Public Fields
 
 		static public GameManager Instance;
-
+        private List<GameObject> SpawnPoints = new List<GameObject>();
 		#endregion
 
 		#region Private Fields
@@ -51,7 +52,10 @@ namespace Photon.Pun.Demo.PunBasics
         void Start()
 		{
 			Instance = this;
-
+            //get spawn points
+            GameObject[] sp = GameObject.FindGameObjectsWithTag("SpawnPoint");
+            foreach (GameObject point in sp)
+                SpawnPoints.Add(point);
             //spawn AI SHIP
             //GameObject aiship = PhotonNetwork.Instantiate(this.AIPrefab.name, new Vector3(10f, 5f, 0f), Quaternion.identity, 0);
             // in case we started this demo with the wrong scene being active, simply load the menu scene
@@ -72,8 +76,10 @@ namespace Photon.Pun.Demo.PunBasics
 				{
 				    Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
 
-					// we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
-					PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f,5f,0f), Quaternion.identity, 0);
+                    // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
+                    //choose random spawn point
+                    int playerSpawn = Random.RandomRange(0, SpawnPoints.Count);
+					PhotonNetwork.Instantiate(this.playerPrefab.name, SpawnPoints[playerSpawn].transform.position, Quaternion.identity, 0);
 
                 }
                 else{
@@ -169,7 +175,7 @@ namespace Photon.Pun.Demo.PunBasics
 
 			Debug.LogFormat( "PhotonNetwork : Loading Level : {0}", PhotonNetwork.CurrentRoom.PlayerCount );
 
-			PhotonNetwork.LoadLevel("SampleScene");
+			PhotonNetwork.LoadLevel("First Level");
 		}
 
 		#endregion
