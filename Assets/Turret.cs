@@ -102,7 +102,7 @@ public class Turret : MonoBehaviourPun
     {
         UpdateTarget();
 
-        float shootVelocityMagnitude = 20 + ;
+        float shootVelocityMagnitude = 20;
         //shoot at target
         Vector3 ourVelocity = transform.GetComponent<Rigidbody>().velocity;
         float distanceToTarget = Vector3.Distance(target.transform.position, transform.position);
