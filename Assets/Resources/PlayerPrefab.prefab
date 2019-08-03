@@ -115,7 +115,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c743c897f65b5544e96fe11df1380a30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  system: 2
+  system: 0
 --- !u!1 &1039527614576314193
 GameObject:
   m_ObjectHideFlags: 0
@@ -240,7 +240,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c743c897f65b5544e96fe11df1380a30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  system: 1
+  system: 0
 --- !u!1 &4320002850882255356
 GameObject:
   m_ObjectHideFlags: 0
@@ -327,8 +327,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CameraGameObject: {fileID: 0}
   bullet: {fileID: 8102552652978596914, guid: b18830cf91f3cde47a8a599b9aafbb7b, type: 3}
-  explosionPrefab: {fileID: 1121192042590650, guid: e1b08032bec16ba4eb1ae23cbd572664,
-    type: 3}
+  explosionPrefab: {fileID: 0}
   Turrets: []
   Systems: []
   forwardThrustForce: 5
@@ -514,7 +513,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c743c897f65b5544e96fe11df1380a30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  system: 2
+  system: 0
 --- !u!1 &8690636517643610688
 GameObject:
   m_ObjectHideFlags: 0

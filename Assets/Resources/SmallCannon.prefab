@@ -43,9 +43,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b57f696cf8680543be997f57ce43fb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: SmallCannon
+  name: 
   Size: 0
-  ReloadTime: 1
+  ReloadTime: 0
   BulletVelocity: 20
   WeaponPrefab: {fileID: 767117885869977267, guid: 76df925a27afd2747bd95a524dce1656,
     type: 3}
