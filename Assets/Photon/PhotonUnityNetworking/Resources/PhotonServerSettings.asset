@@ -34,5 +34,6 @@ MonoBehaviour:
   - RespawnSpaceship
   - ShootGunRPC
   - ShootTurretRPC
+  - ShootAllTurretsRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1

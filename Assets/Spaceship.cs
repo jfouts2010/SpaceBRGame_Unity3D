@@ -9,7 +9,7 @@ public class Spaceship : MonoBehaviourPun
     Rigidbody rb;
     public GameObject CameraGameObject;
     public GameObject bullet;
-
+    public GameObject explosionPrefab;
     public List<GameObject> Turrets = new List<GameObject>();
     public List<GameObject> Systems = new List<GameObject>();
     public float forwardThrustForce = 1.2f;
@@ -22,6 +22,7 @@ public class Spaceship : MonoBehaviourPun
     private float forwardThrustMultiplyer = 1;
     private float systemThrustMultiplier = 1;
     public Dictionary<SpaceshipSystem, int> SystemHealth = new Dictionary<SpaceshipSystem, int>();
+    public Dictionary<SpaceshipSystem, int> SystemHealthMax = new Dictionary<SpaceshipSystem, int>();
     public float hullHealth = 0;
     public bool thrustersOn = false;
     private bool first = true;
@@ -41,12 +42,17 @@ public class Spaceship : MonoBehaviourPun
         GameObject goSystems = transform.Find("Systems").gameObject;
         for (int i = 0; i < goSystems.transform.childCount; i++)
         {
-            Turrets.Add(goSystems.transform.GetChild(i).gameObject);
+            Systems.Add(goSystems.transform.GetChild(i).gameObject);
         }
+
         //set system health
         SystemHealth.Add(SpaceshipSystem.Engine, 100);
         SystemHealth.Add(SpaceshipSystem.Weapons, 100);
         SystemHealth.Add(SpaceshipSystem.Hull, 500);
+
+        SystemHealthMax.Add(SpaceshipSystem.Engine, 100);
+        SystemHealthMax.Add(SpaceshipSystem.Weapons, 100);
+        SystemHealthMax.Add(SpaceshipSystem.Hull, 500);
     }
     private void FixedUpdate()
     {
@@ -75,7 +81,7 @@ public class Spaceship : MonoBehaviourPun
         if (rb.velocity.magnitude > maximumVelcoity)
             rb.velocity = Vector3.ClampMagnitude(rb.velocity, maximumVelcoity);
         //limit turn speed
-        if(rb.angularVelocity.magnitude > 1)
+        if (rb.angularVelocity.magnitude > 1)
             rb.angularVelocity = Vector3.ClampMagnitude(rb.angularVelocity, 1);
 
         //turn off engines if engine systems died
@@ -83,10 +89,13 @@ public class Spaceship : MonoBehaviourPun
             systemThrustMultiplier = 0;
         else
             systemThrustMultiplier = 1;
+        foreach (var pair in SystemHealth)
+            if (pair.Value < SystemHealthMax[pair.Key])
+                SystemHealth[pair.Key] += 5;
     }
     public void ForwardThrust(float percent)
     {
-        rb.AddForceAtPosition(transform.forward * forwardThrustForce * Mathf.Clamp(percent,0,1) * systemThrustMultiplier, transform.position);
+        rb.AddForceAtPosition(transform.forward * forwardThrustForce * Mathf.Clamp(percent, 0, 1) * systemThrustMultiplier, transform.position);
     }
     public void ReverseThrust()
     {
@@ -102,33 +111,53 @@ public class Spaceship : MonoBehaviourPun
     }
     public void SystemDestroyed(SpaceshipSystem system)
     {
-
+        if (system == SpaceshipSystem.Hull)
+        {
+            GameObject explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+            Destroy(explosion, 3);
+            Destroy(this.gameObject);
+        }
+        else
+            foreach (GameObject go in Systems)
+            {
+                if (go.GetComponent<SystemTag>().system == system)
+                {
+                    GameObject explosion = Instantiate(explosionPrefab, go.transform.position, Quaternion.identity);
+                    Destroy(explosion, 3);
+                    break;
+                }
+            }
     }
-    public void ShootAllTurrets(Vector3 target)
+    [PunRPC]
+    void ShootAllTurretsRPC(Vector3 target, PhotonMessageInfo info)
     {
-        foreach(GameObject turret in Turrets)
+        foreach (GameObject turret in Turrets)
         {
             Vector3 turretTarget = target - turret.transform.position;
             Weapons wep = turret.GetComponent<Weapons>();
-            GameObject newBullet = PhotonNetwork.Instantiate(wep.BulletPrefab.name, turret.transform.position, Quaternion.identity, 0);
+            GameObject newBullet = Instantiate(wep.BulletPrefab, turret.transform.position, Quaternion.identity);
             newBullet.GetComponent<Bullet>().owner = GetComponent<PhotonView>().Owner;
             newBullet.transform.forward = turretTarget.normalized;
             newBullet.GetComponent<Rigidbody>().velocity = (turretTarget.normalized * wep.BulletVelocity);// + rb.velocity);
             GameObject.Destroy(newBullet, 10);
         }
     }
+    public void ShootAllTurrets(Vector3 target)
+    {
+        photonView.RPC("ShootAllTurretsRPC", RpcTarget.All, target);
+    }
     public void ShootGun(Vector3 target, bool doheal = false)
     {
-        photonView.RPC("ShootGunRPC", RpcTarget.All, target, doheal );
+        photonView.RPC("ShootGunRPC", RpcTarget.All, target, doheal);
     }
     [PunRPC]
-    void ShootGunRPC(Vector3 direction, bool doheal,  PhotonMessageInfo info)
+    void ShootGunRPC(Vector3 direction, bool doheal, PhotonMessageInfo info)
     {
         GameObject newBullet = GameObject.Instantiate(bullet, transform.position, Quaternion.Euler(direction));
         newBullet.GetComponent<Bullet>().owner = GetComponent<PhotonView>().Owner;
         newBullet.transform.forward = direction.normalized;
-        if (doheal)
-            newBullet.GetComponent<Bullet>().doheal = true;
+        /* if (doheal)
+             newBullet.GetComponent<Bullet>().doheal = true;*/
         newBullet.GetComponent<Rigidbody>().velocity = (direction.normalized * 20);// + rb.velocity);
         GameObject.Destroy(newBullet, 10);
     }

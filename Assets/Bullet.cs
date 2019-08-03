@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class Bullet : MonoBehaviour
+public class Bullet : MonoBehaviourPun
 {
     public Photon.Realtime.Player owner;
     public int bulletDamage = 10;
@@ -20,6 +20,8 @@ public class Bullet : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
         if(other.transform.root.tag == "Ship")
         {
             //check to make sure this isnt you
@@ -38,10 +40,14 @@ public class Bullet : MonoBehaviour
                 ss.SystemHealth[SpaceshipSystem.Hull] -= bulletDamage;
                 if (ss.SystemHealth[SpaceshipSystem.Hull] <= 0)
                     ss.SystemDestroyed(SpaceshipSystem.Hull);
+              
                 SpaceshipSystem sys = other.GetComponent<SystemTag>().system;
-                ss.SystemHealth[sys] -= bulletDamage;
-                if (ss.SystemHealth[sys] <= 0)
-                    ss.SystemDestroyed(sys);
+                if (ss.SystemHealth[sys] > 0)
+                {
+                    ss.SystemHealth[sys] -= bulletDamage;
+                    if (ss.SystemHealth[sys] <= 0)
+                        ss.SystemDestroyed(sys);
+                }
             }
         }
     }

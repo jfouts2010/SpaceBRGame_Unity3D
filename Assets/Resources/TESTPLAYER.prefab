@@ -84,7 +84,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CameraGameObject: {fileID: 0}
   bullet: {fileID: 8102552652978596914, guid: b18830cf91f3cde47a8a599b9aafbb7b, type: 3}
+  explosionPrefab: {fileID: 1121192042590650, guid: e1b08032bec16ba4eb1ae23cbd572664,
+    type: 3}
   Turrets: []
+  Systems: []
   forwardThrustForce: 5
   backwardThrustForce: 1.2
   rotationForce: 1.2
@@ -92,6 +95,7 @@ MonoBehaviour:
   shipRotationSpeed: 3
   maximumVelcoity: 10
   timeBetweenShots: 500
+  hullHealth: 0
   thrustersOn: 0
   lockOnTarget: {fileID: 0}
   lastShootTime: 0
