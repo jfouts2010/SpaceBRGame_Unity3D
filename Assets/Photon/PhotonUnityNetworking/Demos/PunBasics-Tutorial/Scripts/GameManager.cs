@@ -102,7 +102,17 @@ namespace Photon.Pun.Demo.PunBasics
 			{
 				QuitApplication();
 			}
-		}
+            if (PlayerManager.LocalPlayerInstance == null)
+            {
+                Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
+
+                // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
+                //choose random spawn point
+                int playerSpawn = Random.RandomRange(0, SpawnPoints.Count);
+                PhotonNetwork.Instantiate(this.playerPrefab.name, SpawnPoints[playerSpawn].transform.position, Quaternion.identity, 0);
+
+            }
+        }
 
         #endregion
 

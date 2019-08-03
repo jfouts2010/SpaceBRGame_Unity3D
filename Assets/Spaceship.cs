@@ -89,9 +89,12 @@ public class Spaceship : MonoBehaviourPun
             systemThrustMultiplier = 0;
         else
             systemThrustMultiplier = 1;
-        foreach (var pair in SystemHealth)
-            if (pair.Value < SystemHealthMax[pair.Key])
-                SystemHealth[pair.Key] += 5;
+        if (SystemHealth[SpaceshipSystem.Engine] < SystemHealthMax[SpaceshipSystem.Engine])
+            SystemHealth[SpaceshipSystem.Engine] += 5;
+        if (SystemHealth[SpaceshipSystem.Hull] < SystemHealthMax[SpaceshipSystem.Hull])
+            SystemHealth[SpaceshipSystem.Hull] += 5;
+        if (SystemHealth[SpaceshipSystem.Weapons] < SystemHealthMax[SpaceshipSystem.Weapons])
+            SystemHealth[SpaceshipSystem.Weapons] += 5;
     }
     public void ForwardThrust(float percent)
     {
