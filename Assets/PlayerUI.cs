@@ -15,12 +15,16 @@ public class PlayerUI : MonoBehaviour
     GameObject healthTextGameObject;
     GameObject targetting;
     GameObject hitMarker;
-    GameObject energyHeat;
+    GameObject supplies;
+    GameObject energyShield;
+    GameObject heat;
     public float hitMarkerStartTime = -0.6f;
     float hitMarkerDuration = .3f;
     private void Start()
     {
-        energyHeat = transform.Find("EnergyHeat").gameObject;
+        heat = transform.Find("Heat").gameObject;
+        energyShield = transform.Find("EnergyShield").gameObject;
+        supplies = transform.Find("Supplies").gameObject;
         hitMarker = transform.Find("HitMarker").gameObject;
         mainCamera = GameObject.Find("MainCamera").GetComponent<Camera>();
         rb = this.transform.parent.GetComponent<Rigidbody>();
@@ -39,7 +43,14 @@ public class PlayerUI : MonoBehaviour
 
         float minUISize = 100;
         speedTextGameObject.GetComponent<TextMeshProUGUI>().text = rb.velocity.magnitude.ToString("0.##");
-        energyHeat.GetComponent<TextMeshProUGUI>().text = ss.energyshield + "\r\n" + ss.heat + "\r\n" + ss.supplies;
+        supplies.GetComponent<TextMeshProUGUI>().text = ss.supplies.ToString();
+        //ENERGY SHIELD
+        energyShield.transform.Find("Image").GetComponent<Image>().fillAmount = ss.energyshield / ss.energyshieldMax;
+        energyShield.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = (ss.energyshield / ss.energyshieldMax * 100).ToString();
+        //HEAT
+        heat.transform.Find("Image").GetComponent<Image>().fillAmount = ss.heat / ss.MaxHeat;
+        heat.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = (ss.heat / ss.MaxHeat * 100).ToString();
+
         string systemsHealth = "";
         foreach(var sss in ss.SystemHealth)
         {

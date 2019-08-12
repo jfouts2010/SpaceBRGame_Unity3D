@@ -109,7 +109,7 @@ public class PlayerControlls : MonoBehaviourPun
         if(Input.GetKeyDown(KeyCode.Q))
         {
             ss.currentWeapon += 1;
-            if (ss.currentWeapon > ss.weapons.Count)
+            if (ss.currentWeapon >= ss.weapons.Count)
                 ss.currentWeapon = 0;
         }
 
