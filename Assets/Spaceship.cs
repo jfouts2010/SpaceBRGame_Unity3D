@@ -32,7 +32,8 @@ public class Spaceship : MonoBehaviourPun
     private bool first = true;
     public GameObject lockOnTarget;
     public float lastShootTime = 0;
-
+    private GameObject ventSteam;
+    private GameObject OverheatFlames;
     public float SpaceshipTick = 500;
     public float lastSpaceshipTick = 0;
 
@@ -57,6 +58,10 @@ public class Spaceship : MonoBehaviourPun
 
     public void Start()
     {
+        ventSteam = transform.Find("VentSteam").gameObject;
+        ventSteam.SetActive(false);
+        OverheatFlames = transform.Find("OverheatFlames").gameObject;
+        OverheatFlames.SetActive(false);
         rb = transform.GetComponent<Rigidbody>();
         CameraGameObject = GameObject.Find("MainCamera").gameObject;
         //get all the turrets for this ship
@@ -122,7 +127,9 @@ public class Spaceship : MonoBehaviourPun
             systemThrustMultiplier = 1;
 
         //turn of shields if not active
-        if (!SystemActive[SpaceshipSystem.Shields])
+        if (energyshield <= 0)
+            SystemActive[SpaceshipSystem.Shields] = false;
+        if (SystemActive[SpaceshipSystem.Shields] == false)
             transform.Find("EnergyShield").gameObject.SetActive(false);
         else
             transform.Find("EnergyShield").gameObject.SetActive(true);
@@ -150,14 +157,19 @@ public class Spaceship : MonoBehaviourPun
             //heat
             if (venting)
             {
+                ventSteam.SetActive(true);
                 foreach (SpaceshipSystem sys in Enum.GetValues(typeof(SpaceshipSystem)))
                     SystemActive[sys] = false;
                 heat -= idleHeatDisipationPerTick * 3f;
                 if (heat < 0)
                     venting = false;
             }
-            else if (heat > 0)
-                heat -= idleHeatDisipationPerTick;
+            else 
+            {
+                ventSteam.SetActive(false);
+                if (heat > 0)
+                    heat -= idleHeatDisipationPerTick;
+            }
 
             //energyshield
             if (energyshield < energyshieldMax)
@@ -171,9 +183,12 @@ public class Spaceship : MonoBehaviourPun
 
         if (overheat)
         {
+            OverheatFlames.gameObject.SetActive(true);
             foreach (SpaceshipSystem sys in Enum.GetValues(typeof(SpaceshipSystem)))
                 SystemActive[sys] = false;
         }
+        else
+            OverheatFlames.SetActive(false);
 
 
         energyshield = Mathf.Clamp(energyshield, 0, energyshieldMax);

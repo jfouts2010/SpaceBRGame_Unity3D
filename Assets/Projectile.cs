@@ -37,12 +37,10 @@ public class Projectile : MonoBehaviourPun
                 return;
             Spaceship ss = other.transform.root.gameObject.GetComponent<Spaceship>();
             //if there is enough energy to absorb the shot, absorb it, else ignore it
-            if (other.tag == "EnergyShield" && ss.energyshield > bulletDamage)
+            if (other.tag == "EnergyShield")
             {
                 Destroy(this.gameObject);
                 ss.energyshield -= bulletDamage;
-                if (ss.energyshield <= 0)
-                    ss.SystemActive[SpaceshipSystem.Shields] = false;
                 ownerGameObject.transform.Find("PlayerUI(Clone)").GetComponent<PlayerUI>().hitMarkerStartTime = Time.time;
             }
             else if(other.tag != "EnergyShield")

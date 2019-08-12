@@ -68,6 +68,8 @@ Transform:
   - {fileID: 7263208304903451310}
   - {fileID: 8274130042939370265}
   - {fileID: 235531049}
+  - {fileID: 4339565584124848124}
+  - {fileID: 155021138497159471}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -97,6 +99,7 @@ MonoBehaviour:
   maximumVelcoity: 10
   timeBetweenShots: 500
   hullHealth: 0
+  hullHealAmount: 5
   thrustersOn: 0
   lockOnTarget: {fileID: 0}
   lastShootTime: 0
@@ -105,9 +108,14 @@ MonoBehaviour:
   heat: 0
   MaxHeat: 100
   idleHeatDisipationPerTick: 2
+  overheat: 0
+  venting: 0
   energyshieldMax: 100
   energyshield: 100
   energyshieldRechargePerTick: 2
+  supplies: 100
+  weapons: 
+  currentWeapon: 0
 --- !u!54 &271470043339383652
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -386,6 +394,66 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   system: 0
+--- !u!1 &6001635595847143829
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 155021138497159471}
+  m_Layer: 0
+  m_Name: OverheatFlames
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &155021138497159471
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6001635595847143829}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 271470043339383781}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7050168689832913812
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4339565584124848124}
+  m_Layer: 0
+  m_Name: VentSteam
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4339565584124848124
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7050168689832913812}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 271470043339383781}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7227225749390887671
 GameObject:
   m_ObjectHideFlags: 0
