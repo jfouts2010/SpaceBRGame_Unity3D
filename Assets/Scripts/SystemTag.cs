@@ -10,5 +10,6 @@ public enum SpaceshipSystem
 {
     Engine,
     Weapons,
-    Hull
+    Hull,
+    Shields
 }

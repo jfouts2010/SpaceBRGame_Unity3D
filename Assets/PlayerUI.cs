@@ -14,9 +14,14 @@ public class PlayerUI : MonoBehaviour
     GameObject speedTextGameObject;
     GameObject healthTextGameObject;
     GameObject targetting;
-
+    GameObject hitMarker;
+    GameObject energyHeat;
+    public float hitMarkerStartTime = -0.6f;
+    float hitMarkerDuration = .3f;
     private void Start()
     {
+        energyHeat = transform.Find("EnergyHeat").gameObject;
+        hitMarker = transform.Find("HitMarker").gameObject;
         mainCamera = GameObject.Find("MainCamera").GetComponent<Camera>();
         rb = this.transform.parent.GetComponent<Rigidbody>();
         ss = this.transform.parent.GetComponent<Spaceship>();
@@ -27,10 +32,21 @@ public class PlayerUI : MonoBehaviour
     // Update is called once per frame
     private void FixedUpdate()
     {
+        if (Time.time < hitMarkerStartTime + hitMarkerDuration)
+            hitMarker.SetActive(true);
+        else
+            hitMarker.SetActive(false);
+
         float minUISize = 100;
         speedTextGameObject.GetComponent<TextMeshProUGUI>().text = rb.velocity.magnitude.ToString("0.##");
-        healthTextGameObject.GetComponent<TextMeshProUGUI>().text = ss.SystemHealth[SpaceshipSystem.Hull].ToString();
-        if(ss.lockOnTarget != null)
+        energyHeat.GetComponent<TextMeshProUGUI>().text = ss.energyshield + "\r\n" + ss.heat + "\r\n" + ss.supplies;
+        string systemsHealth = "";
+        foreach(var sss in ss.SystemHealth)
+        {
+            systemsHealth += sss.Key + ": " + sss.Value + "\r\n";
+        }
+        healthTextGameObject.GetComponent<TextMeshProUGUI>().text = systemsHealth;//ss.SystemHealth[SpaceshipSystem.Hull].ToString();
+        if (ss.lockOnTarget != null)
         {
             Vector3 vectorPosition = mainCamera.WorldToScreenPoint(ss.lockOnTarget.transform.Find("SpaceShipMesh").transform.position);
             float z = vectorPosition.z;
@@ -88,9 +104,13 @@ public class PlayerUI : MonoBehaviour
                     }
                 }
             }
-            
+            targetting.SetActive(true);
             targetting.transform.position = vectorPosition;
-            targetting.GetComponent<RawImage>().rectTransform.sizeDelta = new Vector3(r.width, r.height);
+            targetting.GetComponent<RawImage>().rectTransform.sizeDelta = new Vector3(r.width, r.width);
+        }
+        else
+        {
+            targetting.SetActive(false);
         }
     }
 

@@ -68,19 +68,29 @@ public class PlayerControlls : MonoBehaviourPun
         {
             RaycastHit hit;
             Ray ray = new Ray(CameraGameObject.transform.position, CameraGameObject.transform.forward);
-            int layerMask = ~(1 << 9);
+            int layerMask = ~(1 << 10);
             if (Physics.Raycast(ray, out hit, 10000, layerMask, QueryTriggerInteraction.Collide))
             {
-                if (hit.transform.gameObject.tag == "Ship")
+                if (hit.transform.gameObject.tag == "Ship" && hit.transform.root != transform.root)
                 {
                     ss.lockOnTarget = hit.transform.gameObject;
                 }
             }
         }
-        PhotonNetwork.FetchServerTimestamp();
-        if (Input.GetKey(KeyCode.Mouse0) && PhotonNetwork.ServerTimestamp > ss.lastShootTime + ss.timeBetweenShots)
+        //heat
+        if(Input.GetKeyDown(KeyCode.V))
         {
-            ss.lastShootTime = PhotonNetwork.ServerTimestamp;
+            if (!ss.venting && !ss.overheat)
+                ss.venting = true;
+        }
+        //energy shield
+        if(Input.GetKeyDown(KeyCode.E))
+        {
+            //activate or diactivate shields
+            ss.ShieldsSwitch();
+        }
+        if (Input.GetKey(KeyCode.Mouse0))
+        {
             PhotonView photonView = PhotonView.Get(this);
             //where to shoot
             Vector3 cameraForwardVector = CameraGameObject.transform.forward;
@@ -88,14 +98,20 @@ public class PlayerControlls : MonoBehaviourPun
             if (ss.lockOnTarget != null)
                 distanceToTarget = Vector3.Distance(CameraGameObject.transform.position, ss.lockOnTarget.transform.position);
             Vector3 shootTarget = cameraForwardVector.normalized * distanceToTarget + CameraGameObject.transform.position;
-            ss.ShootAllTurrets(shootTarget);
-           /* RaycastHit hit;
-            Ray ray = new Ray(CameraGameObject.transform.position, CameraGameObject.transform.forward);
-            int layerMask = ~(1 << 9);
-            if (Physics.Raycast(ray, out hit, 1000, layerMask, QueryTriggerInteraction.Collide))
-                ss.ShootAllTurrets(hit.point - transform.position);
-            else
-                ss.ShootAllTurrets(transform.forward);*/
+            ss.ShootAllTurrets(shootTarget, ss.weapons[ss.currentWeapon]);
         }
+
+        if (Input.GetKey(KeyCode.Alpha1))
+        {
+            ss.ShootAllRockets();
+        }
+
+        if(Input.GetKeyDown(KeyCode.Q))
+        {
+            ss.currentWeapon += 1;
+            if (ss.currentWeapon > ss.weapons.Count)
+                ss.currentWeapon = 0;
+        }
+
     }
 }

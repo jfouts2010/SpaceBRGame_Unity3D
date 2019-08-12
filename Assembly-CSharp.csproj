@@ -63,9 +63,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\AIShip.cs" />
+    <Compile Include="Assets\AsteroidBeltSpawner.cs" />
     <Compile Include="Assets\Bullet.cs" />
     <Compile Include="Assets\CameraController.cs" />
     <Compile Include="Assets\Launcher.cs" />
+    <Compile Include="Assets\Missle.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\Common\EventSystemSpawner.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\Common\OnStartDelete.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\Common\TextButtonTransition.cs" />
@@ -178,6 +180,7 @@
     <Compile Include="Assets\Photon\PhotonUnityNetworking\Demos\Shared Assets\Scripts\DocLinks.cs" />
     <Compile Include="Assets\PlayerManager.cs" />
     <Compile Include="Assets\PlayerUI.cs" />
+    <Compile Include="Assets\Projectile.cs" />
     <Compile Include="Assets\RandomAreaSpawner\RandomAreaSpawner.cs" />
     <Compile Include="Assets\Resources\Misc Effects\Scripts\SpawnEffect.cs" />
     <Compile Include="Assets\Scripts\PlayerControlls.cs" />

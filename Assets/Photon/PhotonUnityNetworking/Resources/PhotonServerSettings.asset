@@ -36,5 +36,8 @@ MonoBehaviour:
   - ShootTurretRPC
   - ShootAllTurretsRPC
   - SystemDestroyedRPC
+  - TakeSystemDamage
+  - ShootAllRocketsRPC
+  - ShieldsSwitchRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1

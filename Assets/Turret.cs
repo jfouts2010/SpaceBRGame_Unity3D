@@ -97,7 +97,7 @@ public class Turret : MonoBehaviourPun
         newBullet.transform.forward = shootVector;
         newBullet.GetComponent<Rigidbody>().velocity = shootVelocity + this.GetComponent<Rigidbody>().velocity;
         GameObject.Destroy(newBullet, 10);*/
-        this.GetComponent<Spaceship>().ShootGun(shootVector);
+        //this.GetComponent<Spaceship>().ShootGun(shootVector);
     }
 
     public void UpdateJohn()
@@ -124,6 +124,6 @@ public class Turret : MonoBehaviourPun
          newBullet.GetComponent<Bullet>().owner = this.gameObject;
          newBullet.GetComponent<Rigidbody>().velocity = shootVelocity + this.GetComponent<Rigidbody>().velocity;
          GameObject.Destroy(newBullet, 10);*/
-        this.GetComponent<Spaceship>().ShootGun(shootVector,dohealOtherUpdate);
+        //this.GetComponent<Spaceship>().ShootGun(shootVector,dohealOtherUpdate);
     }
 }
