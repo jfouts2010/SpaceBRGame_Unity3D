@@ -18,7 +18,7 @@ public class PlayerUI : MonoBehaviour
     GameObject supplies;
     GameObject energyShield;
     GameObject heat;
-    public float hitMarkerStartTime = -0.6f;
+
     float hitMarkerDuration = .3f;
     private void Start()
     {
@@ -36,7 +36,7 @@ public class PlayerUI : MonoBehaviour
     // Update is called once per frame
     private void FixedUpdate()
     {
-        if (Time.time < hitMarkerStartTime + hitMarkerDuration)
+        if (Time.time < ss.hitMarkerStartTime + hitMarkerDuration)
             hitMarker.SetActive(true);
         else
             hitMarker.SetActive(false);

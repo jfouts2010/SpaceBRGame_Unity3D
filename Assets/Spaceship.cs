@@ -5,49 +5,61 @@ using UnityEngine;
 using Photon.Pun;
 using System;
 
-public class Spaceship : MonoBehaviourPun
+public class Spaceship : MonoBehaviourPun, IPunObservable
 {
+    [HideInInspector]
     Rigidbody rb;
+    [HideInInspector]
     public GameObject CameraGameObject;
+    [HideInInspector]
     public GameObject explosionPrefab;
+    [HideInInspector]
     public GameObject Missle; //TEMP
+    [HideInInspector]
     public List<GameObject> Turrets = new List<GameObject>();
+    [HideInInspector]
     public List<GameObject> Systems = new List<GameObject>();
     public float forwardThrustForce = 1.2f;
     public float backwardThrustForce = 1.2f;
-    public float rotationForce = 1.2f;
+    private float rotationForce = 1.2f;
     public float cameraMovementSpeed = 7f;
-    public float shipRotationSpeed = 3f;
-    public float maximumVelcoity = 10;
-    public float timeBetweenShots = 500;
+    private float shipRotationSpeed = 3f;
+    private float defaultMaximumVelcoity = 2.5f;
+    public float currentMaximumVelocity;
+    public bool boosting = false;
+
     private float forwardThrustMultiplyer = 1;
     private float systemThrustMultiplier = 1;
-    public Dictionary<SpaceshipSystem, float> SystemHealth = new Dictionary<SpaceshipSystem, float>();
-    public Dictionary<SpaceshipSystem, float> SystemHealthMax = new Dictionary<SpaceshipSystem, float>();
-    public Dictionary<SpaceshipSystem, float> SystemHealthFixedHealth = new Dictionary<SpaceshipSystem, float>();
-    public Dictionary<SpaceshipSystem, bool> SystemActive = new Dictionary<SpaceshipSystem, bool>();
+    public Dictionary<int, float> SystemHealth = new Dictionary<int, float>();
+    public Dictionary<int, float> SystemHealthMax = new Dictionary<int, float>();
+    public Dictionary<int, float> SystemHealthFixedHealth = new Dictionary<int, float>();
+    public Dictionary<int, bool> SystemActive = new Dictionary<int, bool>();
     public float hullHealth = 0;
-    public float hullHealAmount = 5;
-    public bool thrustersOn = false;
+    private float hullHealAmount = 5;
     private bool first = true;
     public GameObject lockOnTarget;
     public float lastShootTime = 0;
     private GameObject ventSteam;
     private GameObject OverheatFlames;
-    public float SpaceshipTick = 500;
+    public float SpaceshipTick = .5f;
     public float lastSpaceshipTick = 0;
-
+    public float hitMarkerStartTime;
     //heat
     public float heat = 0;
     public float MaxHeat = 100;
-    public float idleHeatDisipationPerTick = 2;
+    private float idleHeatDisipationPerTick = 2;
     public bool overheat = false;
     public bool venting = false;
+
+    //system active for sending on photon
+    public bool engineActive = true;
+    public bool weaponsActive = true;
+    public bool shieldsActive = true;
 
     //EnergyShield
     public float energyshieldMax = 100;
     public float energyshield = 100;
-    public float energyshieldRechargePerTick = 2;
+    private float energyshieldRechargePerTick = 2;
 
     //supplies
     public float supplies = 100;
@@ -81,29 +93,29 @@ public class Spaceship : MonoBehaviourPun
         }
 
         //set system health
-        SystemHealth.Add(SpaceshipSystem.Engine, 100);
-        SystemHealth.Add(SpaceshipSystem.Weapons, 100);
-        SystemHealth.Add(SpaceshipSystem.Shields, 100);
-        SystemHealth.Add(SpaceshipSystem.Hull, 500);
+        SystemHealth.Add((int)SpaceshipSystem.Engine, 100);
+        SystemHealth.Add((int)SpaceshipSystem.Weapons, 100);
+        SystemHealth.Add((int)SpaceshipSystem.Shields, 100);
+        SystemHealth.Add((int)SpaceshipSystem.Hull, 500);
 
-        SystemHealthMax.Add(SpaceshipSystem.Engine, 100);
-        SystemHealthMax.Add(SpaceshipSystem.Weapons, 100);
-        SystemHealthMax.Add(SpaceshipSystem.Shields, 100);
-        SystemHealthMax.Add(SpaceshipSystem.Hull, 500);
+        SystemHealthMax.Add((int)SpaceshipSystem.Engine, 100);
+        SystemHealthMax.Add((int)SpaceshipSystem.Weapons, 100);
+        SystemHealthMax.Add((int)SpaceshipSystem.Shields, 100);
+        SystemHealthMax.Add((int)SpaceshipSystem.Hull, 500);
 
-        SystemHealthFixedHealth.Add(SpaceshipSystem.Engine, 25);
-        SystemHealthFixedHealth.Add(SpaceshipSystem.Weapons, 25);
-        SystemHealthFixedHealth.Add(SpaceshipSystem.Hull, 0);
-        SystemHealthFixedHealth.Add(SpaceshipSystem.Shields, 100);
+        SystemHealthFixedHealth.Add((int)SpaceshipSystem.Engine, 25);
+        SystemHealthFixedHealth.Add((int)SpaceshipSystem.Weapons, 25);
+        SystemHealthFixedHealth.Add((int)SpaceshipSystem.Hull, 0);
+        SystemHealthFixedHealth.Add((int)SpaceshipSystem.Shields, 100);
 
-        SystemActive.Add(SpaceshipSystem.Engine, true);
-        SystemActive.Add(SpaceshipSystem.Weapons, true);
-        SystemActive.Add(SpaceshipSystem.Hull, true);
-        SystemActive.Add(SpaceshipSystem.Shields, true);
+        SystemActive.Add((int)SpaceshipSystem.Engine, true);
+        SystemActive.Add((int)SpaceshipSystem.Weapons, true);
+        SystemActive.Add((int)SpaceshipSystem.Hull, true);
+        SystemActive.Add((int)SpaceshipSystem.Shields, true);
     }
     private void FixedUpdate()
     {
-        hullHealth = SystemHealth[SpaceshipSystem.Hull];
+        hullHealth = SystemHealth[(int)SpaceshipSystem.Hull];
 
         if (this.transform.localEulerAngles.x != 0 || this.transform.localEulerAngles.z != 0)
         {
@@ -113,63 +125,63 @@ public class Spaceship : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
-        //limit velocity
-        if (rb.velocity.magnitude > maximumVelcoity)
-            rb.velocity = Vector3.ClampMagnitude(rb.velocity, maximumVelcoity);
+        currentMaximumVelocity = (boosting ? 2 : 1) * defaultMaximumVelcoity;
+
         //limit turn speed
         if (rb.angularVelocity.magnitude > 1)
             rb.angularVelocity = Vector3.ClampMagnitude(rb.angularVelocity, 1);
 
         //turn off engines if engine systems died
-        if (!SystemActive[SpaceshipSystem.Engine])
+        if (!SystemActive[(int)SpaceshipSystem.Engine])
             systemThrustMultiplier = 0;
         else
             systemThrustMultiplier = 1;
 
         //turn of shields if not active
-        if (energyshield <= 0)
-            SystemActive[SpaceshipSystem.Shields] = false;
-        if (SystemActive[SpaceshipSystem.Shields] == false)
+        if (SystemActive[(int)SpaceshipSystem.Shields] == false)
             transform.Find("EnergyShield").gameObject.SetActive(false);
         else
             transform.Find("EnergyShield").gameObject.SetActive(true);
 
         if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
             return;
-        PhotonNetwork.FetchServerTimestamp();
+        if (energyshield <= 0)
+            SystemActive[(int)SpaceshipSystem.Shields] = false;
         //Spaceship health/heat updates
-        if (PhotonNetwork.ServerTimestamp > lastSpaceshipTick + SpaceshipTick)
+        if (Time.time > lastSpaceshipTick + SpaceshipTick)
         {
-            lastSpaceshipTick = PhotonNetwork.ServerTimestamp;
+            lastSpaceshipTick = Time.time;
 
             //health
             foreach (SpaceshipSystem sys in Enum.GetValues(typeof(SpaceshipSystem)))
             {
 
-                if (SystemHealth[sys] < SystemHealthMax[sys] && supplies >= hullHealAmount)
+                if (SystemHealth[(int)sys] < SystemHealthMax[(int)sys] && supplies >= hullHealAmount)
                 {
-                    SystemHealth[sys] += hullHealAmount;
+                    SystemHealth[(int)sys] += hullHealAmount;
                     supplies -= hullHealAmount;
                 }
-                if (SystemActive[sys] == false && SystemHealth[sys] >= SystemHealthFixedHealth[sys] && sys != SpaceshipSystem.Shields)
-                    SystemActive[sys] = true;
+                if (SystemActive[(int)sys] == false && SystemHealth[(int)sys] >= SystemHealthFixedHealth[(int)sys] && sys != SpaceshipSystem.Shields)
+                    SystemActive[(int)sys] = true;
             }
             //heat
             if (venting)
             {
                 ventSteam.SetActive(true);
                 foreach (SpaceshipSystem sys in Enum.GetValues(typeof(SpaceshipSystem)))
-                    SystemActive[sys] = false;
+                    SystemActive[(int)sys] = false;
                 heat -= idleHeatDisipationPerTick * 3f;
                 if (heat < 0)
                     venting = false;
             }
-            else 
+            else
             {
                 ventSteam.SetActive(false);
                 if (heat > 0)
                     heat -= idleHeatDisipationPerTick;
             }
+            if (boosting)
+                heat += 4;
 
             //energyshield
             if (energyshield < energyshieldMax)
@@ -185,7 +197,7 @@ public class Spaceship : MonoBehaviourPun
         {
             OverheatFlames.gameObject.SetActive(true);
             foreach (SpaceshipSystem sys in Enum.GetValues(typeof(SpaceshipSystem)))
-                SystemActive[sys] = false;
+                SystemActive[(int)sys] = false;
         }
         else
             OverheatFlames.SetActive(false);
@@ -196,7 +208,9 @@ public class Spaceship : MonoBehaviourPun
     }
     public void ForwardThrust(float percent)
     {
-        rb.AddForceAtPosition(transform.forward * forwardThrustForce * Mathf.Clamp(percent, 0, 1) * systemThrustMultiplier, transform.position);
+        //limit velocity
+        if (rb.velocity.magnitude < currentMaximumVelocity)
+            rb.AddForceAtPosition(transform.forward * forwardThrustForce * Mathf.Clamp(percent, 0, 1) * systemThrustMultiplier, transform.position);
     }
     public void ReverseThrust()
     {
@@ -212,12 +226,14 @@ public class Spaceship : MonoBehaviourPun
     }
     public void ShieldsSwitch()
     {
+        //SystemActive[SpaceshipSystem.Shields] = !SystemActive[SpaceshipSystem.Shields];
+        //shieldsActive = !shieldsActive;
         photonView.RPC("ShieldsSwitchRPC", RpcTarget.All);
     }
     [PunRPC]
     void ShieldsSwitchRPC(PhotonMessageInfo info)
     {
-        SystemActive[SpaceshipSystem.Shields] = !SystemActive[SpaceshipSystem.Shields];
+        SystemActive[(int)SpaceshipSystem.Shields] = !SystemActive[(int)SpaceshipSystem.Shields];
     }
     public void SystemDestroyed(SpaceshipSystem system)
     {
@@ -235,9 +251,9 @@ public class Spaceship : MonoBehaviourPun
         }
         else
         {
-            if (SystemActive[(SpaceshipSystem)system])
+            if (SystemActive[(int)system])
             {
-                SystemActive[(SpaceshipSystem)system] = false;
+                SystemActive[(int)system] = false;
                 foreach (GameObject go in Systems)
                 {
                     if (go.GetComponent<SystemTag>().system == (SpaceshipSystem)system)
@@ -257,30 +273,29 @@ public class Spaceship : MonoBehaviourPun
     [PunRPC]
     void TakeSystemDamage(int sys, float bulletDamage, PhotonMessageInfo info)
     {
-        SystemHealth[SpaceshipSystem.Hull] -= bulletDamage;
-        if (SystemHealth[SpaceshipSystem.Hull] <= 0)
+        SystemHealth[(int)SpaceshipSystem.Hull] -= bulletDamage;
+        if (SystemHealth[(int)SpaceshipSystem.Hull] <= 0)
             SystemDestroyed(SpaceshipSystem.Hull);
 
 
-        if (SystemHealth[(SpaceshipSystem)sys] > 0)
+        if (SystemHealth[(int)sys] > 0)
         {
-            SystemHealth[(SpaceshipSystem)sys] -= bulletDamage;
-            if (SystemHealth[(SpaceshipSystem)sys] <= 0)
+            SystemHealth[(int)sys] -= bulletDamage;
+            if (SystemHealth[(int)sys] <= 0)
                 SystemDestroyed((SpaceshipSystem)sys);
         }
     }
     public void ShootAllRockets()
     {
-        if (SystemActive[SpaceshipSystem.Weapons])
+        if (SystemActive[(int)SpaceshipSystem.Weapons])
             photonView.RPC("ShootAllRocketsRPC", RpcTarget.All);
     }
     [PunRPC]
     void ShootAllRocketsRPC(PhotonMessageInfo info)
     {
-        PhotonNetwork.FetchServerTimestamp();
-        if (PhotonNetwork.ServerTimestamp > lastShootTime + timeBetweenShots)
+        if (PhotonNetwork.ServerTimestamp > lastShootTime + 1)
         {
-            lastShootTime = PhotonNetwork.ServerTimestamp;
+            lastShootTime = Time.time;
             GameObject newMissle = Instantiate(Missle, transform.position, Quaternion.identity);
             newMissle.transform.forward = this.transform.up;
             newMissle.GetComponent<Rigidbody>().velocity = (this.transform.up * 20);
@@ -291,11 +306,10 @@ public class Spaceship : MonoBehaviourPun
     {
         GameObject go = Resources.Load(name.ToString()) as GameObject;
         Weapons wep = go.GetComponent<Weapons>();
-        PhotonNetwork.FetchServerTimestamp();
         if (Time.time > lastShootTime + wep.ReloadTime)
         {
             lastShootTime = Time.time;
-            if (SystemActive[SpaceshipSystem.Weapons])
+            if (SystemActive[(int)SpaceshipSystem.Weapons])
                 photonView.RPC("ShootAllTurretsRPC", RpcTarget.All, target, (int)name);
         }
     }
@@ -321,21 +335,41 @@ public class Spaceship : MonoBehaviourPun
         }
     }
 
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    void IPunObservable.OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
         {
+            //update photon Bools
+            /*  engineActive = SystemActive[SpaceshipSystem.Engine];
+              weaponsActive = SystemActive[SpaceshipSystem.Weapons];
+              shieldsActive = SystemActive[SpaceshipSystem.Shields];*/
+
             // We own this player: send the others our data
             stream.SendNext(this.SystemHealth);
+            stream.SendNext(this.SystemActive);
             stream.SendNext(this.heat);
             stream.SendNext(this.supplies);
+            stream.SendNext(this.boosting);
+            //stream.SendNext(this.shieldsActive);
+            //stream.SendNext(this.hitMarkerStartTime);
         }
         else
         {
             // Network player, receive data
+            this.SystemHealth = (Dictionary<int, float>)stream.ReceiveNext();
+            this.SystemActive = (Dictionary<int, bool>)stream.ReceiveNext();
             this.heat = (float)stream.ReceiveNext();
-            this.SystemHealth = (Dictionary<SpaceshipSystem, float>)stream.ReceiveNext();
+            //this.shieldsActive = (bool)stream.ReceiveNext();
             this.supplies = (float)stream.ReceiveNext();
+            this.boosting = (bool)stream.ReceiveNext();
+            //this.hitMarkerStartTime = (float)stream.ReceiveNext();
+
+            //update photon Bools
+            /*  SystemActive[SpaceshipSystem.Engine] = engineActive;
+              SystemActive[SpaceshipSystem.Weapons] = weaponsActive;
+              SystemActive[SpaceshipSystem.Shields] = shieldsActive;*/
+
+
         }
     }
 }

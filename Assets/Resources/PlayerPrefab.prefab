@@ -589,8 +589,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6782139297968264837}
   - component: {fileID: 6782139297968264841}
-  - component: {fileID: 6782139297968264838}
   - component: {fileID: 5673731244295901357}
+  - component: {fileID: 6782139297968264838}
   - component: {fileID: 9132373657628019640}
   - component: {fileID: 692059518012271440}
   - component: {fileID: 8453993112909286879}
@@ -645,45 +645,27 @@ MonoBehaviour:
   Systems: []
   forwardThrustForce: 5
   backwardThrustForce: 0.8
-  rotationForce: 1.2
   cameraMovementSpeed: 12
-  shipRotationSpeed: 3
-  maximumVelcoity: 5
-  timeBetweenShots: 500
+  currentMaximumVelocity: 0
+  boosting: 0
   hullHealth: 0
-  hullHealAmount: 5
-  thrustersOn: 0
   lockOnTarget: {fileID: 0}
   lastShootTime: 0
-  SpaceshipTick: 500
+  SpaceshipTick: 0.5
   lastSpaceshipTick: 0
+  hitMarkerStartTime: 0
   heat: 0
   MaxHeat: 100
-  idleHeatDisipationPerTick: 2
   overheat: 0
   venting: 0
+  engineActive: 1
+  weaponsActive: 1
+  shieldsActive: 1
   energyshieldMax: 100
   energyshield: 100
-  energyshieldRechargePerTick: 2
   supplies: 100
   weapons: 
   currentWeapon: 0
---- !u!54 &6782139297968264838
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6782139297968264840}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0.5
-  m_AngularDrag: 0.5
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!114 &5673731244295901357
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -704,9 +686,26 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 9132373657628019640}
   - {fileID: 692059518012271440}
+  - {fileID: 6782139297968264841}
   viewIdField: 0
   InstantiationId: 1
   isRuntimeInstantiated: 0
+--- !u!54 &6782139297968264838
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6782139297968264840}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0.5
+  m_AngularDrag: 0.5
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!114 &9132373657628019640
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1732,15 +1731,15 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1.0000005
       objectReference: {fileID: 0}
-    - target: {fileID: 198104970619360998, guid: be6847dd39ab95f4daa2ed98e4f90564,
-        type: 3}
-      propertyPath: UVModule.flipU
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 199570947319072982, guid: be6847dd39ab95f4daa2ed98e4f90564,
         type: 3}
       propertyPath: m_Flip.x
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 198104970619360998, guid: be6847dd39ab95f4daa2ed98e4f90564,
+        type: 3}
+      propertyPath: UVModule.flipU
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: be6847dd39ab95f4daa2ed98e4f90564, type: 3}

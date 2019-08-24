@@ -33,20 +33,24 @@ public class Projectile : MonoBehaviourPun
             }
             else
                 return; //if it doesnt have a photon view you can probably ignore it
-            if (!PhotonNetwork.IsMasterClient)
-                return;
+            
             Spaceship ss = other.transform.root.gameObject.GetComponent<Spaceship>();
             //if there is enough energy to absorb the shot, absorb it, else ignore it
             if (other.tag == "EnergyShield")
             {
                 Destroy(this.gameObject);
+                ownerGameObject.GetComponent<Spaceship>().hitMarkerStartTime = Time.time;
+                if (!PhotonNetwork.IsMasterClient)
+                    return;
                 ss.energyshield -= bulletDamage;
-                ownerGameObject.transform.Find("PlayerUI(Clone)").GetComponent<PlayerUI>().hitMarkerStartTime = Time.time;
+                
             }
             else if(other.tag != "EnergyShield")
             {
                 Destroy(this.gameObject);
-                ownerGameObject.transform.Find("PlayerUI(Clone)").GetComponent<PlayerUI>().hitMarkerStartTime = Time.time;
+                ownerGameObject.GetComponent<Spaceship>().hitMarkerStartTime = Time.time;
+                if (!PhotonNetwork.IsMasterClient)
+                    return;
                 if (ss != null)
                 {
 

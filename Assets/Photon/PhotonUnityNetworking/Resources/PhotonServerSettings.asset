@@ -39,5 +39,6 @@ MonoBehaviour:
   - TakeSystemDamage
   - ShootAllRocketsRPC
   - ShieldsSwitchRPC
+  - SetHitTimeRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1

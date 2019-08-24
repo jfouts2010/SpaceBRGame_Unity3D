@@ -36,15 +36,15 @@ public class PlayerControlls : MonoBehaviourPun
         if (Input.GetKey(KeyCode.W))
         {
             ss.ForwardThrust(1f);
-            ss.thrustersOn = true;
+            //ss.thrustersOn = true;
         }
         else if (Input.GetKey(KeyCode.S))
         {
             ss.ReverseThrust();
-            ss.thrustersOn = false;
+            //ss.thrustersOn = false;
         }
-        else
-            ss.thrustersOn = false;
+       /* else
+            ss.thrustersOn = false;*/
         if (Input.GetKey(KeyCode.A))
         {
             ss.TurnThrust(1, false);
@@ -54,7 +54,7 @@ public class PlayerControlls : MonoBehaviourPun
             ss.TurnThrust(1, true);
         }
         //turn z axis
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftControl))
         {
             ss.ZDirectionThrust(.5f, false);
         }
@@ -64,7 +64,7 @@ public class PlayerControlls : MonoBehaviourPun
         }
         //SHOOTING
         //locking on 
-        if (Input.GetKey(KeyCode.Mouse1))
+        if (Input.GetKey(KeyCode.Mouse2))
         {
             RaycastHit hit;
             Ray ray = new Ray(CameraGameObject.transform.position, CameraGameObject.transform.forward);
@@ -77,8 +77,19 @@ public class PlayerControlls : MonoBehaviourPun
                 }
             }
         }
+        //zoom
+        if(Input.GetKey(KeyCode.Mouse1))
+        {
+            Camera cam = CameraGameObject.GetComponent<Camera>();
+            cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 30, Time.deltaTime * 3);
+        }
+        else
+        {
+            Camera cam = CameraGameObject.GetComponent<Camera>();
+            cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 60, Time.deltaTime * 3);
+        }
         //heat
-        if(Input.GetKeyDown(KeyCode.V))
+        if (Input.GetKeyDown(KeyCode.V))
         {
             if (!ss.venting && !ss.overheat)
                 ss.venting = true;
@@ -112,6 +123,12 @@ public class PlayerControlls : MonoBehaviourPun
             if (ss.currentWeapon >= ss.weapons.Count)
                 ss.currentWeapon = 0;
         }
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            ss.boosting = true;
+        }
+        else
+            ss.boosting = false;
 
     }
 }

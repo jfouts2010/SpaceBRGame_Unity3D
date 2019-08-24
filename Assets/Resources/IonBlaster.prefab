@@ -48,7 +48,7 @@ MonoBehaviour:
   bulletDamage: 10
   Size: 0
   ReloadTime: 0.8
-  BulletVelocity: 25
+  BulletVelocity: 30
   WeaponPrefab: {fileID: 767117885869977267, guid: 76df925a27afd2747bd95a524dce1656,
     type: 3}
   BulletPrefab: {fileID: 8102552652978596914, guid: b18830cf91f3cde47a8a599b9aafbb7b,
